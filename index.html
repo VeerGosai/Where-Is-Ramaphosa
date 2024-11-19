@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Destination</title>
+</head>
+<body>
+    <h1>Flight Destination</h1>
+    <p id="destination">Loading...</p>
+    <script>
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('destination').textContent = data.destination
+                    ? `Destination: ${data.destination}`
+                    : 'Destination not found.';
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('destination').textContent = 'Error loading data.';
+            });
+    </script>
+</body>
+</html>
