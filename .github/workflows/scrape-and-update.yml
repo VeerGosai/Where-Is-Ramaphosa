@@ -2,8 +2,11 @@ name: Scrape and Update GitHub Pages
 
 on:
   schedule:
-    - cron: '* * * * *' # Runs daily at midnight UTC
-  workflow_dispatch: # Allows manual triggering
+    - cron: '* * * * *'  # Runs every minute for testing, change to daily or as needed
+  workflow_dispatch:  # Allows manual triggering
+
+permissions:
+  contents: write  # Allow GitHub Actions bot to push changes
 
 jobs:
   scrape-and-update:
@@ -18,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Use Node.js 18 (required for Cheerio dependencies)
+          node-version: '18'  # Use Node.js 18 (required for Cheerio dependencies)
 
       # Step 3: Install dependencies
       - name: Install dependencies
@@ -28,18 +31,15 @@ jobs:
       - name: Run scraping script
         run: node scrape.js
 
-
+      # Step 5: Configure Git
       - name: Configure Git
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
 
-
-      # Step 5: Commit and push changes to GitHub Pages branch
+      # Step 6: Commit and push changes to GitHub Pages branch
       - name: Commit and push changes
         run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git commit -m "Update flight data"
+          git commit -m "Update flight data" || echo "No changes to commit"
           git push
