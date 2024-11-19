@@ -31,8 +31,8 @@ jobs:
       # Step 5: Commit and push changes to GitHub Pages branch
       - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git commit -m "Update scraped flight data"
+          git commit -m "Update flight data"
           git push
