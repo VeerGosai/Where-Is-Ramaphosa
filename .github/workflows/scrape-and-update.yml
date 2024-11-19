@@ -28,6 +28,13 @@ jobs:
       - name: Run scraping script
         run: node scrape.js
 
+
+      - name: Configure Git
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+
+
       # Step 5: Commit and push changes to GitHub Pages branch
       - name: Commit and push changes
         run: |
