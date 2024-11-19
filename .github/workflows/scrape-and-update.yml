@@ -2,7 +2,7 @@ name: Scrape and Update GitHub Pages
 
 on:
   schedule:
-    - cron: '* * * * *'  # Runs every minute for testing, change to daily or as needed
+    - cron: '0 * * * *'  # Runs every minute for testing, change to daily or as needed
   workflow_dispatch:  # Allows manual triggering
 
 permissions:
