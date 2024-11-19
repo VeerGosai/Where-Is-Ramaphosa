@@ -128,8 +128,8 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Fetch and display the data from the JSON file
-        fetch('data.json')
+        // Fetch and display the data from the GitHub raw JSON file
+        fetch('https://raw.githubusercontent.com/VeerGosai/Where-Is-Ramaphosa/main/data.json')
             .then(response => response.json())
             .then(data => {
                 // Destination and Last Updated Text
