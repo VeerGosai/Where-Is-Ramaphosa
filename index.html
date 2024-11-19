@@ -8,13 +8,14 @@
 <body>
     <h1>Flight Destination</h1>
     <p id="destination">Loading...</p>
+    <p id="last-updated"></p>
     <script>
+        // Fetch and display the data from the JSON file
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('destination').textContent = data.destination
-                    ? `Destination: ${data.destination}`
-                    : 'Destination not found.';
+                document.getElementById('destination').textContent = `Destination: ${data.destination || 'Not found'}`;
+                document.getElementById('last-updated').textContent = `Last Updated: ${new Date(data.lastUpdated).toLocaleString()}`;
             })
             .catch(error => {
                 console.error('Error fetching data:', error);

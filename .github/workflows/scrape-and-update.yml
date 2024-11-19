@@ -18,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18' # Use Node.js 18 (required for Cheerio dependencies)
 
       # Step 3: Install dependencies
       - name: Install dependencies
@@ -28,11 +28,11 @@ jobs:
       - name: Run scraping script
         run: node scrape.js
 
-      # Step 5: Commit and push changes
+      # Step 5: Commit and push changes to GitHub Pages branch
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git commit -m "Update scraped data"
+          git commit -m "Update scraped flight data"
           git push
