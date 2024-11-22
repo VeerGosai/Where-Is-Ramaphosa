@@ -49,7 +49,6 @@
             text-align: center;
             margin-top: 40px;
             font-size: 30px;
-
         }
 
         #destination {
@@ -65,23 +64,12 @@
             margin-top: 10px;
         }
 
-        /* Styling for country flag */
-        #country-flag {
-            display: block;
-            width: 50px;
-            height: auto;
-            margin: 20px auto;
-        }
-
-      /* Footer Styles */
-      footer {
+        /* Footer Styles */
+        footer {
             background-color: #333;
             color: white;
             text-align: center;
             padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
             font-family: 'Visby Round Regular', sans-serif;
         }
 
@@ -95,13 +83,17 @@
             text-decoration: underline;
         }
 
+        @media (max-width: 768px) {
+            footer {
+                position: static;
+            }
+        }
     </style>
 </head>
 <body>
     <h1>Where Is Ramaphosa?</h1>
     <p id="destination">Loading...</p>
     <p id="last-updated"></p>
-    <img id="country-flag" alt="Country Flag">
     <div id="map"></div>
 
     <script>
@@ -110,32 +102,17 @@
             .then(response => response.json())
             .then(data => {
                 // Display destination and last updated date
-                document.getElementById('destination').textContent = `Current Location: ${data.destination || 'Not found'}`;
-                document.getElementById('last-updated').textContent = `Last Updated: ${new Date(data.lastUpdated).toLocaleString()}`;
+                const destination = data.destination === "- -" 
+                    ? `Currently in transit from ${data.departing}` 
+                    : `Current Location: ${data.destination}`;
 
-                // Extract the destination and country
-                const destination = data.destination;
-                const country = data.destination.split(',')[1]?.trim() || 'South Africa';  // Default to 'South Africa' if not found
+                document.getElementById('destination').textContent = destination;
+                document.getElementById('last-updated').textContent = `Last Updated: ${data.destination_time}`;
 
-                // Fetch country flag using country code (assuming the country name is valid)
-                const flagUrl = `https://flagcdn.com/w320/${getCountryCode(country)}.png`;
-
-                // Check if flag URL is valid
-                const flagImg = new Image();
-                flagImg.onload = function () {
-                    // If the flag is loaded successfully, display it
-                    document.getElementById('country-flag').src = flagUrl;
-                };
-                flagImg.onerror = function () {
-                    // If the flag fails to load, hide the flag image
-                    document.getElementById('country-flag').style.display = 'none';
-                };
-                flagImg.src = flagUrl;
-                
-
-                // If location data is missing, use geocoding to find the coordinates
-                if (destination) {
-                    getCoordinates(destination).then(coords => {
+                // Use geocoding to find the coordinates if a destination is provided
+                const location = data.destination === "- -" ? data.departing : data.destination;
+                if (location) {
+                    getCoordinates(location).then(coords => {
                         if (coords) {
                             // Initialize the map with the fetched coordinates
                             let map = L.map('map').setView([coords.lat, coords.lon], 10);
@@ -147,11 +124,8 @@
 
                             // Add a marker at the location
                             L.marker([coords.lat, coords.lon]).addTo(map)
-                                .bindPopup(`<b>Destination:</b> ${data.destination || 'Not found'}`)
+                                .bindPopup(`<b>Location:</b> ${location}`)
                                 .openPopup();
-                        } else {
-                            // Fallback to centering map on the country's capital if coordinates are not found
-                            centerMapOnCountry(country);
                         }
                     });
                 }
@@ -180,49 +154,6 @@
                     console.error('Error getting coordinates:', error);
                     return null;
                 });
-        }
-
-        // Function to get the country code for flags based on country name
-        function getCountryCode(countryName) {
-            const countryCodes = {
-                'South Africa': 'za',
-                'Brazil': 'br',
-                'United States': 'us',
-                'India': 'in',
-                'Argentina': 'ar',
-                'France': 'fr',
-                // Add more countries here as needed
-            };
-            return countryCodes[countryName.toLowerCase()] || 'za';  // Default to South Africa
-        }
-
-        // Function to center the map on the country if coordinates are not available
-        function centerMapOnCountry(country) {
-            const countryData = {
-                'South Africa': { lat: -30.5595, lon: 22.9375 },
-                'Brazil': { lat: -14.2350, lon: -51.9253 },
-                'United States': { lat: 37.0902, lon: -95.7129 },
-                'India': { lat: 20.5937, lon: 78.9629 },
-                'Argentina': { lat: -38.4161, lon: -63.6167 },
-                'France': { lat: 46.6034, lon: 1.8883 },
-                // Add more countries here as needed
-            };
-
-            const coords = countryData[country];
-            if (coords) {
-                // Initialize the map with the country's coordinates
-                let map = L.map('map').setView([coords.lat, coords.lon], 5);
-
-                // Add OpenStreetMap tiles to the map
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
-
-                // Add a marker at the location
-                L.marker([coords.lat, coords.lon]).addTo(map)
-                    .bindPopup(`<b>Country:</b> ${country}`)
-                    .openPopup();
-            }
         }
     </script>
 
