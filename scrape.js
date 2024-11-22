@@ -18,10 +18,12 @@ const fs = require('fs');
             waitUntil: 'networkidle2',
         });
 
-        // Scrape the destination
+        // Scrape Info
+        const departing = await page.$eval('.flightPageSummaryCity', el => el.textContent.trim());
         const destination = await page.$eval('.destinationCity', el => el.textContent.trim());
+        const destination_time = await page.$eval('.flightPageSummaryArrival.flightTime', el => el.textContent.trim());
 
-        const data = { destination, lastUpdated: new Date().toISOString() };
+        const data = { departing, destination }; //, lastUpdated: new Date().toISOString()
         fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
 
         console.log('Scraping successful:', data);
