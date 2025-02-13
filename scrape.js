@@ -22,8 +22,9 @@ const fs = require('fs');
         const departing = await page.$eval('.flightPageSummaryCity', el => el.textContent.trim());
         const destination = await page.$eval('.destinationCity', el => el.textContent.trim());
         const destination_time = await page.$eval('.flightPageSummaryArrival.flightTime', el => el.textContent.trim());
+        const destination_date = await page.$eval('.flightPageSummaryArrivalDayAbbrv', el => el.textContent.trim());
 
-        const data = { departing, destination, destination_time }; //, lastUpdated: new Date().toISOString()
+        const data = { departing, destination, destination_time, destination_date }; //, lastUpdated: new Date().toISOString()
         fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
 
         console.log('Scraping successful:', data);
