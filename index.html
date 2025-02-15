@@ -107,7 +107,7 @@
                     : `Current Location: ${data.destination}`;
 
                 document.getElementById('destination').textContent = destination;
-                document.getElementById('last-updated').textContent = `Last Updated: ${data.destination_time}`;
+                document.getElementById('last-updated').textContent = `Last Updated: ${data.destination_date} ${data.destination_time}`;
 
                 // Use geocoding to find the coordinates if a destination is provided
                 const location = data.destination === "- -" ? data.departing : data.destination;
@@ -161,8 +161,8 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
     <footer>
-        <p>&copy; 2024 Veer Gosai</p>
-        <p>veer@sapapers.co.za</p>
+        <p>&copy; 2025 Veer Gosai</p>
+        <p>veer@taptic.org</p>
     </footer>
 </body>
 </html>
