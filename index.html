@@ -11,6 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Loading Historical Flights...</p>
+    </div>
+    
     <div class="container">
         <header>
             <div class="logo">
@@ -60,6 +65,36 @@
             
             <div class="map-container">
                 <div id="map"></div>
+            </div>
+            
+            <!-- Historical Flights Section -->
+            <div class="history-section">
+                <h2>Historical Flights</h2>
+                <p class="subtitle">Track the President's previous movements</p>
+                
+                <div class="history-controls">
+                    <button id="sort-by-date" class="history-button">Sort by Date</button>
+                    <button id="sort-by-destination" class="history-button">Sort by Destination</button>
+                    <span class="history-count">Loading flights...</span>
+                </div>
+                
+                <div class="history-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Departure</th>
+                                <th>Destination</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-data">
+                            <tr>
+                                <td colspan="4" class="loading-message">Loading flight history...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
         
