@@ -44,14 +44,19 @@ jobs:
           git add data.json
           git diff --staged --quiet || (git commit -m "Update flight data" && echo "changes=true" >> $GITHUB_OUTPUT)
           
-      # Step 7: Update history.json if data.json changed
+      # Step 7: Update history.json if data.json changed - with improved preservation
       - name: Update history.json
         if: steps.commit_data.outputs.changes == 'true'
         run: |
+          # Make sure we have the latest history.json
+          git pull origin $(git branch --show-current) --no-rebase || echo "No remote updates to pull"
+          
           # Add current data to history with timestamp
           node -e "
             const fs = require('fs');
             const currentData = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+            
+            console.log('Current flight data to be added to history:', JSON.stringify(currentData));
             
             // Add timestamp to the current data
             const entryWithTimestamp = {
@@ -63,33 +68,64 @@ jobs:
             
             // Check if history.json exists and read it
             if (fs.existsSync('history.json')) {
+              console.log('Found existing history.json file');
               try {
                 const historyContent = fs.readFileSync('history.json', 'utf8');
+                console.log('History file size:', historyContent.length, 'bytes');
+                
                 if (historyContent.trim()) {
                   history = JSON.parse(historyContent);
+                  console.log('Successfully parsed history.json, found', history.length, 'entries');
+                  
                   if (!Array.isArray(history)) {
                     console.log('History file exists but is not an array, creating new array');
                     history = [];
                   }
+                } else {
+                  console.log('History file is empty, starting new array');
                 }
               } catch (err) {
-                console.error('Error reading history.json:', err);
-                console.log('Creating new history array');
+                console.error('Error reading history.json:', err.message);
+                console.log('Creating new history array due to error');
               }
             } else {
               console.log('No history.json found, creating new file');
             }
             
+            // Create a backup of existing history if it exists
+            if (history.length > 0) {
+              fs.writeFileSync('history.json.bak', JSON.stringify(history, null, 2));
+              console.log('Created backup of existing history with', history.length, 'entries');
+            }
+            
             // Append new entry to history
             history.push(entryWithTimestamp);
+            console.log('Appended new entry to history, now has', history.length, 'entries');
             
             // Write updated history back to file
             fs.writeFileSync('history.json', JSON.stringify(history, null, 2));
-            console.log('Updated history.json with new entry. Total entries:', history.length);
+            console.log('Successfully wrote updated history.json with', history.length, 'entries');
+            
+            // Verify the file was written correctly
+            try {
+              const verifyHistory = JSON.parse(fs.readFileSync('history.json', 'utf8'));
+              console.log('Verification: history.json contains', verifyHistory.length, 'entries');
+            } catch (err) {
+              console.error('Verification failed:', err.message);
+            }
           "
           
+          echo "Checking history.json file status..."
+          ls -la history.json*
+          
+          # Add history.json to git
           git add history.json
-          git commit -m "Update history log with new flight data" || echo "No changes to history.json"
+          
+          # Commit with detailed message
+          git commit -m "Update history log - append flight from $(date)" || echo "No changes to history.json"
+          
+          # Show git status for debugging
+          git status
 
       # Step 8: Push all changes to GitHub Pages branch
       - name: Push changes
