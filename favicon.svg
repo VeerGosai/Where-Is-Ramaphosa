@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Simple location pin shape -->
+  <path d="M50,5 C32,5 17,19 17,37 C17,55 35,69 50,95 C65,69 83,55 83,37 C83,19 68,5 50,5 Z" 
+        fill="#e74c3c" stroke="#c0392b" stroke-width="2" />
+  
+  <!-- Inner white circle -->
+  <circle cx="50" cy="37" r="15" fill="white" stroke="#c0392b" stroke-width="1" />
+</svg>

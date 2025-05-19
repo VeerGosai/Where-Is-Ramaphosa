@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Where Is Ramaphosa? | Presidential Flight Tracker</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Learn how we track President Cyril Ramaphosa's official movements through SAAF Squadron 21 flights. Information on presidential aircraft, flight patterns, and our methodology.">
+    <meta name="keywords" content="SAAF Squadron 21, LMG1, Presidential aircraft, Ramaphosa travel, ZS-RSA, Boeing 737-800, Gulfstream G5, South African Air Force, VIP transport">
+    
+    <!-- Open Graph / Social Media Preview Tags -->
+    <meta property="og:title" content="About | Where Is Ramaphosa?">
+    <meta property="og:description" content="How we track Presidential flights using SAAF Squadron 21 data and flight patterns.">
+    <meta property="og:image" content="https://veergosai.github.io/Where-Is-Ramaphosa/social-preview.png">
+    <meta property="og:url" content="https://veergosai.github.io/Where-Is-Ramaphosa/about.html">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://veergosai.github.io/Where-Is-Ramaphosa/about.html">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <!-- Removed the logo image, keeping just the text -->
+                <h1>Where Is Ramaphosa?</h1>
+            </div>
+            <div class="theme-toggle" id="theme-toggle">
+                <span class="theme-toggle-icon" id="theme-toggle-icon">☀️</span>
+                <span id="theme-toggle-text">Light Mode</span>
+            </div>
+            <p class="subtitle">Track the South African President's Movements</p>
+            
+            <!-- Navigation -->
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html" class="active">About</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main class="about-content">
+            <section class="about-section">
+                <h2>About Where Is Ramaphosa?</h2>
+                <p>Welcome to "Where Is Ramaphosa?" – a platform dedicated to tracking the official movements of the President of the Republic of South Africa, Honorable Matamela Cyril Ramaphosa, through flight data.</p>
+                
+                <p>This project was created to provide transparency and public awareness about presidential travel and activities. By tracking the presidential aircraft, we can indirectly follow the President's official engagements across South Africa and internationally.</p>
+            </section>
+            
+            <section class="about-section">
+                <h2>How We Track Presidential Movements</h2>
+                <p>Our tracking methodology focuses primarily on the SAAF Squadron 21, the VIP transport squadron of the South African Air Force responsible for transporting the President and other high-ranking government officials.</p>
+                
+                <h3>Key Tracking Elements:</h3>
+                <ul>
+                    <li><strong>LMG1 Call Sign:</strong> Similar to "Air Force One" in the United States, we track the "LMG1" call sign which is specifically used when the President is onboard.</li>
+                    <li><strong>Flight Data Sources:</strong> We consolidate data from various flight tracking services, official government announcements, and reliable news sources.</li>
+                    <li><strong>Aircraft Verification:</strong> We verify aircraft registration numbers against known presidential fleet aircraft.</li>
+                </ul>
+            </section>
+            
+            <section class="about-section">
+                <h2>The Presidential Fleet</h2>
+                <p>The President of South Africa typically travels on these aircraft from SAAF Squadron 21 (VIP transport squadron):</p>
+                
+                <div class="aircraft-list">
+                    <div class="aircraft-item">
+                        <h3>Boeing 737-800 (ZS-RSA)</h3>
+                        <p>Primary presidential aircraft for medium to long-haul flights.</p>
+                    </div>
+                    
+                    <div class="aircraft-item">
+                        <h3>Gulfstream G5 (ZS-GKA)</h3>
+                        <p>Used for shorter flights and when visiting locations with shorter runways.</p>
+                    </div>
+                    
+                    <div class="aircraft-item">
+                        <h3>Dassault Falcon 900EX (ZS-FCI)</h3>
+                        <p>Alternative executive transport for presidential travel.</p>
+                    </div>
+                    
+                    <div class="aircraft-item">
+                        <h3>Airbus A340</h3>
+                        <p>Occasionally chartered from SAA for long-haul international flights.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="about-section">
+                <h2>Data Accuracy & Disclaimers</h2>
+                <p>We strive for accuracy in our tracking data, but please note:</p>
+                <ul>
+                    <li>This is not an official government website.</li>
+                    <li>Data may be delayed or occasionally inaccurate due to security protocols around presidential travel.</li>
+                    <li>Not all presidential movements are tracked via aircraft.</li>
+                    <li>We respect security considerations and only display information that is already publicly available.</li>
+                </ul>
+            </section>
+            
+            <section class="about-section">
+                <h2>Contact & Feedback</h2>
+                <p>We welcome your feedback, corrections, or suggestions to improve this service. Your input helps us maintain accuracy and enhance the platform's usefulness.</p>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Data updated automatically. This is not an official government website.</p>
+            <p class="small">© <span id="current-year"></span> Where Is Ramaphosa | <a href="about.html">About</a> | <a href="sitemap.xml">Sitemap</a></p>
+        </footer>
+    </div>
+    
+    <script src="utils.js"></script>
+    <script>
+        // Set the current year in the footer
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Initialize dark mode
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            // Add listener for changes to color scheme preference
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                if (event.matches) {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+            });
+            
+            // Hide theme toggle button
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

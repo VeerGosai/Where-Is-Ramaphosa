@@ -7,6 +7,27 @@
     --warning-color: #ffc107;
     --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
+    
+    /* Base theme colors */
+    --bg-color: #f8f9fa;
+    --card-bg-color: white;
+    --text-color: #333;
+    --text-secondary: #666;
+    --border-color: #eee;
+    --table-header-bg: #f2f2f2;
+    --table-row-hover: #f9f9f9;
+}
+
+/* Dark mode theme colors */
+.dark-mode {
+    --bg-color: #121212;
+    --card-bg-color: #1e1e1e;
+    --text-color: #f4f4f4;
+    --text-secondary: #b0b0b0;
+    --border-color: #444;
+    --table-header-bg: #2a2a2a;
+    --table-row-hover: #2c2c2c;
+    --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -17,9 +38,10 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f8f9fa;
-    color: var(--dark-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
     line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -33,28 +55,67 @@ header {
     text-align: center;
     margin-bottom: 2rem;
     animation: fadeIn 1s ease-in;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+/* Logo container styling - simplified */
 .logo {
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-bottom: 0.5rem;
+    justify-content: center;
+}
+
+/* Responsive adjustment for small screens */
+@media (max-width: 480px) {
+    .logo {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .site-logo {
+        width: 35px;
+        height: 35px;
+    }
 }
 
 h1 {
-    color: var(--dark-color);
+    color: var(--text-color);
     font-size: 2.5rem;
 }
 
 .subtitle {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 1.2rem;
+}
+
+/* Dark Mode Toggle */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background-color: var(--card-bg-color);
+    box-shadow: var(--box-shadow);
+    margin-left: auto;
+    transition: var(--transition);
+    position: relative;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+}
+
+.theme-toggle-icon {
+    font-size: 1.2rem;
+    margin-right: 6px;
 }
 
 /* Tracker Card Styles */
 .tracker-card {
-    background: white;
+    background: var(--card-bg-color);
     border-radius: 10px;
     padding: 2rem;
     margin-bottom: 2rem;
@@ -102,7 +163,7 @@ h1 {
 .time-details {
     display: flex;
     justify-content: space-around;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
     padding-top: 1.5rem;
 }
 
@@ -111,7 +172,7 @@ h1 {
 }
 
 h3 {
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
     font-size: 1rem;
 }
@@ -119,12 +180,12 @@ h3 {
 .location-item p, .time-item p {
     font-size: 1.2rem;
     font-weight: bold;
-    color: var(--dark-color);
+    color: var(--text-color);
 }
 
 /* Map Styles */
 .map-container {
-    background: white;
+    background: var(--card-bg-color);
     border-radius: 10px;
     padding: 1rem;
     box-shadow: var(--box-shadow);
@@ -139,14 +200,79 @@ h3 {
     border-radius: 8px;
 }
 
+/* Map Control Button */
+.map-control-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: white;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-radius: 4px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.map-control-button:hover {
+    background-color: #f4f4f4;
+    transform: scale(1.05);
+}
+
+.dark-mode .map-control-button {
+    background-color: #333;
+    color: white;
+    border-color: rgba(255,255,255,0.2);
+}
+
+.dark-mode .map-control-button:hover {
+    background-color: #444;
+}
+
+.recenter-icon {
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Map-specific loading overlay */
+.map-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    color: white;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    border-radius: 8px;
+}
+
+.map-loading-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
 /* Historical Map Enhancements */
 .map-controls {
     display: none;
 }
 
 .map-button {
-    background-color: white;
-    border: 1px solid #ccc;
+    background-color: var(--card-bg-color);
+    border: 1px solid var(--border-color);
     padding: 5px 10px;
     margin: 2px;
     border-radius: 4px;
@@ -156,7 +282,7 @@ h3 {
 }
 
 .map-button:hover {
-    background-color: #f0f0f0;
+    background-color: var(--table-row-hover);
 }
 
 .map-button.active {
@@ -194,12 +320,7 @@ h3 {
 footer {
     text-align: center;
     padding: 1rem 0;
-    color: #666;
-}
-
-.small {
-    font-size: 0.8rem;
-    margin-top: 0.5rem;
+    color: var(--text-secondary);
 }
 
 /* Animations */
@@ -216,7 +337,7 @@ footer {
 
 /* Current Location Card Styles */
 .location-card {
-    background: white;
+    background: var(--card-bg-color);
     border-radius: 10px;
     padding: 2rem;
     margin-bottom: 2rem;
@@ -297,7 +418,7 @@ footer {
 
 /* Historical Flights Section */
 .history-section {
-    background: white;
+    background: var(--card-bg-color);
     border-radius: 10px;
     padding: 2rem;
     margin-top: 2rem;
@@ -307,14 +428,14 @@ footer {
 
 .history-section h2 {
     font-size: 1.8rem;
-    color: var(--dark-color);
+    color: var(--text-color);
     text-align: center;
     margin-bottom: 0.5rem;
 }
 
 .history-section .subtitle {
     text-align: center;
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 1.5rem;
 }
 
@@ -326,8 +447,8 @@ footer {
     flex-wrap: wrap;
     gap: 1rem;
     padding: 1rem 0;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .history-button {
@@ -360,20 +481,20 @@ footer {
 }
 
 .history-table th {
-    background-color: #f2f2f2;
+    background-color: var(--table-header-bg);
     padding: 1rem;
     text-align: left;
     font-weight: bold;
-    color: #555;
+    color: var(--text-secondary);
 }
 
 .history-table td {
     padding: 1rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .history-table tr:hover {
-    background-color: #f9f9f9;
+    background-color: var(--table-row-hover);
 }
 
 .history-table tr.history-entry {
@@ -485,7 +606,7 @@ footer {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-bottom: 1.5rem;
-    background: #f5f7fa;
+    background: var(--table-header-bg);
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
@@ -499,14 +620,15 @@ footer {
 .control-group label {
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #555;
+    color: var(--text-secondary);
 }
 
 .control-select {
     padding: 0.5rem;
     border-radius: 4px;
-    border: 1px solid #ddd;
-    background-color: white;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
     font-family: inherit;
 }
 
@@ -553,26 +675,27 @@ footer {
 .flight-selector-container summary {
     cursor: pointer;
     padding: 0.75rem;
-    background-color: #f0f0f0;
+    background-color: var(--table-header-bg);
     border-radius: 4px;
     font-weight: bold;
     transition: background-color 0.3s;
 }
 
 .flight-selector-container summary:hover {
-    background-color: #e5e5e5;
+    background-color: var(--table-row-hover);
 }
 
 .flight-selector {
     max-height: 200px;
     overflow-y: auto;
     padding: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     margin-top: 0.5rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 0.5rem;
+    background-color: var(--card-bg-color);
 }
 
 .flight-checkbox-label {
@@ -584,11 +707,7 @@ footer {
 }
 
 .flight-checkbox-label:hover {
-    background-color: #f0f0f0;
-}
-
-.flight-checkbox-label input {
-    margin-right: 0.5rem;
+    background-color: var(--table-row-hover);
 }
 
 @media (max-width: 768px) {
@@ -600,4 +719,178 @@ footer {
         flex-direction: column;
         gap: 0.5rem;
     }
+}
+
+/* Footer for dark mode */
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    color: var(--text-secondary);
+}
+
+/* Map tile customization for dark mode */
+.dark-mode .leaflet-tile {
+    filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
+
+.dark-mode .leaflet-container {
+    background: #333;
+}
+
+/* Add these styles to your existing CSS file */
+
+/* Navigation styles */
+.main-nav {
+    margin: 20px 0;
+}
+
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+}
+
+.main-nav li {
+    margin: 0 15px;
+}
+
+.main-nav a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.main-nav a:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.main-nav a.active {
+    font-weight: 700;
+    border-bottom: 2px solid #007bff;
+}
+
+.dark-mode .main-nav a {
+    color: #f0f0f0;
+}
+
+.dark-mode .main-nav a:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+/* About page styles */
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.about-section {
+    margin-bottom: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.dark-mode .about-section {
+    background-color: #2a2a2a;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.about-section h2 {
+    color: #007bff;
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.about-section h3 {
+    color: #444;
+    margin-top: 25px;
+}
+
+.dark-mode .about-section h2 {
+    color: #4da3ff;
+    border-bottom-color: #444;
+}
+
+.dark-mode .about-section h3 {
+    color: #ddd;
+}
+
+.about-section p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.about-section ul {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.about-section li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.aircraft-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.aircraft-item {
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    padding: 15px;
+    border-left: 4px solid #007bff;
+}
+
+.dark-mode .aircraft-item {
+    background-color: #333;
+    border-left-color: #4da3ff;
+}
+
+.aircraft-item h3 {
+    margin-top: 0;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.dark-mode .aircraft-item h3 {
+    color: #f0f0f0;
+}
+
+.aircraft-item p {
+    margin-bottom: 0;
+    font-size: 0.95em;
+}
+
+/* Responsive design for about page */
+@media (max-width: 768px) {
+    .aircraft-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .about-section {
+        padding: 15px;
+    }
+}
+
+/* Map recenter bounce animation */
+@keyframes mapBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+.map-bounce {
+    animation: mapBounce 0.6s ease-in-out;
 }

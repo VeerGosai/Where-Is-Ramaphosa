@@ -3,12 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Where Is Ramaphosa?</title>
+    <title>Where Is Ramaphosa? | Track South African Presidential Flights</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Track President Cyril Ramaphosa's official movements by following SAAF Squadron 21 flights. Real-time updates on presidential travel across South Africa and internationally.">
+    <meta name="keywords" content="Ramaphosa, President of South Africa, presidential flights, SAAF Squadron 21, LMG1, ZS-RSA, presidential travel, South African government, flight tracker">
+    <meta name="author" content="Where Is Ramaphosa">
+    
+    <!-- Open Graph / Social Media Preview Tags -->
+    <meta property="og:title" content="Where Is Ramaphosa? | Presidential Flight Tracker">
+    <meta property="og:description" content="Follow President Cyril Ramaphosa's official movements through SAAF Squadron 21 flight tracking. Stay updated on presidential travel.">
+    <meta property="og:image" content="https://veergosai.github.io/Where-Is-Ramaphosa/social-preview.png">
+    <meta property="og:url" content="https://veergosai.github.io/Where-Is-Ramaphosa/">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Where Is Ramaphosa? | Presidential Flight Tracker">
+    <meta name="twitter:description" content="Track the South African President's official flights and locations in real-time.">
+    <meta name="twitter:image" content="https://veergosai.github.io/Where-Is-Ramaphosa/social-preview.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://veergosai.github.io/Where-Is-Ramaphosa/">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Where Is Ramaphosa?",
+      "url": "https://veergosai.github.io/Where-Is-Ramaphosa/",
+      "description": "Track President Cyril Ramaphosa's official movements by following SAAF Squadron 21 flights.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://veergosai.github.io/Where-Is-Ramaphosa/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 </head>
 <body>
     <div id="loading-overlay" class="loading-overlay">
@@ -19,10 +63,21 @@
     <div class="container">
         <header>
             <div class="logo">
-                <!-- Removed broken flag image -->
                 <h1>Where Is Ramaphosa?</h1>
             </div>
+            <div class="theme-toggle" id="theme-toggle">
+                <span class="theme-toggle-icon" id="theme-toggle-icon">☀️</span>
+                <span id="theme-toggle-text">Light Mode</span>
+            </div>
             <p class="subtitle">Track the South African President's Movements</p>
+            
+            <!-- Navigation -->
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
         </header>
         
         <main>
@@ -65,6 +120,13 @@
             
             <div class="map-container">
                 <div id="map"></div>
+                <button id="recenter-map" class="map-control-button" title="Recenter Map">
+                    <span class="recenter-icon">⌖</span>
+                </button>
+                <div id="map-loading-overlay" class="map-loading-overlay">
+                    <div class="loading-spinner"></div>
+                    <p>Loading Map Data...</p>
+                </div>
             </div>
             
             <!-- Historical Flights Section -->
@@ -149,13 +211,18 @@
         
         <footer>
             <p>Data updated automatically. This is not an official government website.</p>
-            <p class="small">© <span id="current-year"></span> Where Is Ramaphosa</p>
+            <p class="small">© <span id="current-year"></span> Where Is Ramaphosa | <a href="about.html">About</a> | <a href="sitemap.xml">Sitemap</a></p>
         </footer>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
-    <script src="script.js"></script>
+    <!-- Removed reference to script.js -->
+    <script src="utils.js"></script>
+    <script src="map.js"></script>
+    <script src="flights.js"></script>
+    <script src="ui.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

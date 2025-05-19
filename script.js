@@ -8,7 +8,14 @@ let flightDisplaySettings = {
     selectedFlights: []
 };
 
+// Dark mode variables
+let isDarkMode = false;
+let mapInstance = null;
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize dark mode
+    initDarkMode();
+    
     // Set current year in the footer
     document.getElementById('current-year').textContent = new Date().getFullYear();
     
@@ -49,7 +56,53 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the flight selector with empty state
     initializeFlightSelector();
+
+    // Remove theme toggle event listener as we're using system preference only
+    // Hide theme toggle button if it exists
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.style.display = 'none';
+    }
 });
+
+// Initialize dark mode based on system preference only
+function initDarkMode() {
+    // Check if user prefers dark mode based on system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        enableDarkMode();
+    } else {
+        disableDarkMode(); // Default to light mode
+    }
+    
+    // Add listener for changes to color scheme preference
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        if (event.matches) {
+            enableDarkMode();
+        } else {
+            disableDarkMode();
+        }
+        
+        // Update map tiles if map exists
+        if (map) {
+            // Force map to redraw tiles with new styles
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        }
+    });
+}
+
+// Enable dark mode
+function enableDarkMode() {
+    document.body.classList.add('dark-mode');
+    isDarkMode = true;
+}
+
+// Disable dark mode
+function disableDarkMode() {
+    document.body.classList.remove('dark-mode');
+    isDarkMode = false;
+}
 
 // Global variable to store historical flights
 let historicalFlights = [];
@@ -160,6 +213,7 @@ function displayError() {
 function initializeMap(data) {
     // Create a map centered on South Africa
     map = L.map('map').setView([-30.5595, 22.9375], 5);
+    mapInstance = map; // Store map reference for dark mode updates
     
     // Add OpenStreetMap tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
