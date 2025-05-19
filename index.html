@@ -13,7 +13,7 @@
 <body>
     <div id="loading-overlay" class="loading-overlay">
         <div class="loading-spinner"></div>
-        <p>Loading Historical Flights...</p>
+        <p>Mapping Presidential Movements...</p>
     </div>
     
     <div class="container">
@@ -71,6 +71,55 @@
             <div class="history-section">
                 <h2>Historical Flights</h2>
                 <p class="subtitle">Track the President's previous movements</p>
+                
+                <!-- Enhanced Customization Controls -->
+                <div class="flight-controls">
+                    <div class="control-group">
+                        <label for="flight-count">Number of flights to show:</label>
+                        <select id="flight-count" class="control-select">
+                            <option value="5">Last 5 flights</option>
+                            <option value="10" selected>Last 10 flights</option>
+                            <option value="20">Last 20 flights</option>
+                            <option value="all">All flights</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Display options:</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="show-markers" checked>
+                                Show markers
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="show-routes" checked>
+                                Show flight paths
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="show-labels" checked>
+                                Show labels
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="show-current-departure" checked>
+                                Show current departure
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <button id="apply-settings" class="primary-button">Show Historical Flights</button>
+                    </div>
+                </div>
+                
+                <div class="flight-selector-container">
+                    <details>
+                        <summary>Select specific flights</summary>
+                        <div class="flight-selector" id="flight-selector">
+                            <p class="loading-message">Loading flights...</p>
+                            <!-- Checkboxes will be generated here -->
+                        </div>
+                    </details>
+                </div>
                 
                 <div class="history-controls">
                     <button id="sort-by-date" class="history-button">Sort by Date</button>

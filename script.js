@@ -1,3 +1,13 @@
+// Add these variables to store user preferences
+let flightDisplaySettings = {
+    count: 10,
+    showMarkers: true,
+    showRoutes: true,
+    showLabels: true,
+    showCurrentDeparture: true,
+    selectedFlights: []
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Set current year in the footer
     document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -31,6 +41,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('sort-by-destination').addEventListener('click', function() {
         sortHistoricalFlights('destination');
     });
+
+    // Set up flight control event listeners
+    document.getElementById('apply-settings').addEventListener('click', function() {
+        applyFlightSettings();
+    });
+    
+    // Initialize the flight selector with empty state
+    initializeFlightSelector();
 });
 
 // Global variable to store historical flights
@@ -148,30 +166,7 @@ function initializeMap(data) {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     
-    // Add map controls
-    const mapControls = L.control({position: 'topright'});
-    mapControls.onAdd = function(map) {
-        const div = L.DomUtil.create('div', 'map-controls');
-        div.innerHTML = `
-            <button id="show-history-flights" class="map-button">Show Last 10 Flights</button>
-            <button id="hide-history-flights" class="map-button" style="display:none;">Hide Historical Flights</button>
-        `;
-        return div;
-    };
-    mapControls.addTo(map);
-    
-    // Add event listeners for map control buttons
-    document.getElementById('show-history-flights').addEventListener('click', function() {
-        showHistoricalFlights();
-        this.style.display = 'none';
-        document.getElementById('hide-history-flights').style.display = 'block';
-    });
-    
-    document.getElementById('hide-history-flights').addEventListener('click', function() {
-        hideHistoricalFlights();
-        this.style.display = 'none';
-        document.getElementById('show-history-flights').style.display = 'block';
-    });
+    // Remove the map controls section that was here before
     
     // Function to geocode a location name and add a marker
     function addLocationMarker(locationName, isDestination = false) {
@@ -180,6 +175,12 @@ function initializeMap(data) {
             (locationName && locationName.includes("—"))) {
             console.log('Skipping geocoding for transit indicator:', locationName);
             return; // Exit early, don't make the API call
+        }
+        
+        // Skip departure markers if setting is disabled
+        if (!isDestination && !flightDisplaySettings.showCurrentDeparture) {
+            console.log('Skipping departure marker due to settings');
+            return;
         }
         
         // Using Nominatim geocoding service
@@ -199,10 +200,17 @@ function initializeMap(data) {
                         iconAnchor: [15, 30]
                     });
                     
+                    // Store marker reference for later visibility control
                     const marker = L.marker([lat, lon], { icon: markerIcon }).addTo(map);
-                    marker.bindPopup(`<b>${locationName}</b><br>${isDestination ? 'Destination' : 'Departure'}`).openPopup();
                     
-                    // Draw a line between departure and destination if both markers exist
+                    // Store reference to marker
+                    if (!isDestination) {
+                        map.departureMarker = marker;
+                    } else {
+                        map.destinationMarker = marker;
+                    }
+                    
+                    // Store references for polylines too
                     if (map.departureCoords && isDestination) {
                         const polyline = L.polyline([map.departureCoords, [lat, lon]], {
                             color: '#007bff',
@@ -211,11 +219,15 @@ function initializeMap(data) {
                             dashArray: '10, 10'
                         }).addTo(map);
                         
+                        map.currentPolyline = polyline;
+                        
                         // Animate the line
                         const animatedPolyline = L.polyline([[map.departureCoords[0], map.departureCoords[1]]], {
                             color: '#ff4757',
                             weight: 4
                         }).addTo(map);
+                        
+                        map.currentAnimatedPolyline = animatedPolyline;
                         
                         animateLine(animatedPolyline, map.departureCoords, [lat, lon]);
                         
@@ -302,13 +314,26 @@ function showHistoricalFlights() {
         return;
     }
     
-    // Get the last 10 completed flights
-    const last10Flights = window.historicalFlightData
-        .slice(-10)
-        .reverse(); // Reverse to show most recent first
+    // Get flights based on user settings
+    let flightsToShow = [];
     
-    // Create markers and paths for each flight
-    plotHistoricalFlights(last10Flights);
+    if (flightDisplaySettings.selectedFlights.length > 0) {
+        // User has selected specific flights
+        flightsToShow = flightDisplaySettings.selectedFlights.map(index => 
+            window.historicalFlightData[parseInt(index)]);
+    } else {
+        // Get flights based on count setting
+        flightsToShow = window.historicalFlightData
+            .slice(-Math.min(flightDisplaySettings.count, window.historicalFlightData.length))
+            .reverse(); // Reverse to show most recent first
+    }
+    
+    // Create markers and paths for selected flights
+    plotHistoricalFlights(flightsToShow);
+    
+    // Show settings are applied
+    document.getElementById('show-history-flights').style.display = 'none';
+    document.getElementById('hide-history-flights').style.display = 'block';
 }
 
 function hideHistoricalFlights() {
@@ -365,28 +390,33 @@ function plotHistoricalFlights(flights) {
                     bounds.push(fromCoords);
                     bounds.push(toCoords);
                     
-                    // Create markers with numbering
-                    const fromMarker = createFlightMarker(fromCoords, index + 1, colors[index]);
-                    const toMarker = createFlightMarker(toCoords, index + 1, colors[index]);
+                    // Create markers if enabled
+                    if (flightDisplaySettings.showMarkers) {
+                        const fromMarker = createFlightMarker(fromCoords, index + 1, colors[index]);
+                        const toMarker = createFlightMarker(toCoords, index + 1, colors[index]);
+                        
+                        if (fromMarker) historicalFlightMarkers.push(fromMarker);
+                        if (toMarker) historicalFlightMarkers.push(toMarker);
+                    }
                     
-                    // Create flight path - solid line
-                    const path = L.polyline([fromCoords, toCoords], {
-                        color: colors[index],
-                        weight: 3,
-                        opacity: 0.8
-                    }).addTo(map);
-                    
-                    // Add popup with flight info
-                    path.bindPopup(`
-                        <b>Flight #${index + 1}</b><br>
-                        From: ${flight.departing}<br>
-                        To: ${flight.destination}<br>
-                        Date: ${flight.destination_date || 'Unknown'}
-                    `);
-                    
-                    // Store references for later removal
-                    historicalFlightMarkers.push(fromMarker, toMarker);
-                    historicalFlightPaths.push(path);
+                    // Create flight path if enabled
+                    if (flightDisplaySettings.showRoutes) {
+                        const path = L.polyline([fromCoords, toCoords], {
+                            color: colors[index],
+                            weight: 3,
+                            opacity: 0.8
+                        }).addTo(map);
+                        
+                        // Add popup with flight info
+                        path.bindPopup(`
+                            <b>Flight #${index + 1}</b><br>
+                            From: ${flight.departing}<br>
+                            To: ${flight.destination}<br>
+                            Date: ${flight.destination_date || 'Unknown'}
+                        `);
+                        
+                        historicalFlightPaths.push(path);
+                    }
                 }
                 
                 checkCompletion();
@@ -414,10 +444,17 @@ function plotHistoricalFlights(flights) {
 }
 
 function createFlightMarker(coords, number, color) {
-    // Create a custom icon with the flight number
+    // Only create marker if showMarkers is enabled
+    if (!flightDisplaySettings.showMarkers) {
+        return null;
+    }
+    
+    // Create icon with or without labels based on settings
     const icon = L.divIcon({
         className: 'flight-marker',
-        html: `<div style="border-color: ${color};">${number}</div>`,
+        html: flightDisplaySettings.showLabels ? 
+              `<div style="border-color: ${color};">${number}</div>` :
+              `<div style="border-color: ${color};"></div>`,
         iconSize: [24, 24],
         iconAnchor: [12, 12]
     });
@@ -570,6 +607,9 @@ function fetchHistoricalFlights() {
                 countElement.textContent = `${historicalFlights.length} flights`;
             }
             
+            // Populate the flight selector
+            populateFlightSelector(historicalFlights);
+            
             // Display the flights sorted by most recent date first
             sortHistoricalFlights('date');
         })
@@ -579,6 +619,12 @@ function fetchHistoricalFlights() {
             if (historyData) {
                 historyData.innerHTML = 
                     `<tr><td colspan="4" class="loading-message">Error loading flight history: ${error.message}</td></tr>`;
+            }
+            
+            const flightSelector = document.getElementById('flight-selector');
+            if (flightSelector) {
+                flightSelector.innerHTML = 
+                    `<p class="loading-message">Error loading flights: ${error.message}</p>`;
             }
         });
 }
@@ -723,4 +769,112 @@ function hideLoading() {
         loadingCount = 0;
         document.getElementById('loading-overlay').classList.remove('active');
     }
+}
+
+// Function to initialize flight selector
+function initializeFlightSelector() {
+    const flightSelector = document.getElementById('flight-selector');
+    if (!flightSelector) return;
+    
+    flightSelector.innerHTML = '<p class="loading-message">Loading flights...</p>';
+}
+
+// Function to apply user-selected flight display settings
+function applyFlightSettings() {
+    // Get settings from UI
+    const countSelect = document.getElementById('flight-count');
+    const countValue = countSelect.value;
+    
+    flightDisplaySettings.count = countValue === 'all' ? 9999 : parseInt(countValue);
+    flightDisplaySettings.showMarkers = document.getElementById('show-markers').checked;
+    flightDisplaySettings.showRoutes = document.getElementById('show-routes').checked;
+    flightDisplaySettings.showLabels = document.getElementById('show-labels').checked;
+    flightDisplaySettings.showCurrentDeparture = document.getElementById('show-current-departure').checked;
+    
+    // Get selected flights (if any)
+    flightDisplaySettings.selectedFlights = Array.from(
+        document.querySelectorAll('#flight-selector input:checked')
+    ).map(checkbox => checkbox.value);
+    
+    // Always hide existing flights first
+    hideHistoricalFlights();
+    
+    // Update current departure visibility
+    updateCurrentDepartureVisibility();
+    
+    // Show historical flights
+    showHistoricalFlights();
+    
+    // Update button text to show it's been applied
+    const applyButton = document.getElementById('apply-settings');
+    const originalText = applyButton.textContent;
+    applyButton.textContent = 'Settings Applied!';
+    applyButton.classList.add('settings-applied');
+    
+    // Reset button text after a delay
+    setTimeout(() => {
+        applyButton.textContent = originalText;
+        applyButton.classList.remove('settings-applied');
+    }, 1500);
+}
+
+// Add a function to update current departure visibility
+function updateCurrentDepartureVisibility() {
+    // Find the current departure marker and update its visibility
+    if (map && map.departureMarker) {
+        if (flightDisplaySettings.showCurrentDeparture) {
+            map.addLayer(map.departureMarker);
+        } else {
+            map.removeLayer(map.departureMarker);
+        }
+    }
+    
+    // Also update any polylines that might be showing the current route
+    if (map && map.currentPolyline) {
+        if (flightDisplaySettings.showCurrentDeparture) {
+            map.addLayer(map.currentPolyline);
+        } else {
+            map.removeLayer(map.currentPolyline);
+        }
+    }
+    
+    if (map && map.currentAnimatedPolyline) {
+        if (flightDisplaySettings.showCurrentDeparture) {
+            map.addLayer(map.currentAnimatedPolyline);
+        } else {
+            map.removeLayer(map.currentAnimatedPolyline);
+        }
+    }
+}
+
+// Populate flight selector with checkboxes
+function populateFlightSelector(flights) {
+    const flightSelector = document.getElementById('flight-selector');
+    if (!flightSelector) return;
+    
+    if (!flights || flights.length === 0) {
+        flightSelector.innerHTML = '<p class="loading-message">No flights available</p>';
+        return;
+    }
+    
+    let html = '';
+    flights.forEach((flight, index) => {
+        const flightId = `flight-${index}`;
+        const flightDesc = `${flight.departing} → ${flight.destination}`;
+        const flightDate = flight.destination_date || 'Unknown date';
+        
+        html += `
+            <label class="flight-checkbox-label" title="${flightDesc} (${flightDate})">
+                <input type="checkbox" id="${flightId}" value="${index}" checked>
+                ${truncateText(flightDesc, 30)}
+            </label>
+        `;
+    });
+    
+    flightSelector.innerHTML = html;
+}
+
+// Function to truncate text for better UI
+function truncateText(text, maxLength) {
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 }
