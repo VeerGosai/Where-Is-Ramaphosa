@@ -4,165 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Where Is Ramaphosa?</title>
-
-    <!-- Link to Leaflet CSS for map styling -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-
-    <!-- External Fonts -->
-    <style>
-        @font-face {
-            font-family: 'Visby Round Bold';
-            src: url('https://raw.githubusercontent.com/VeerGosai/SA-Gov-Status/main/Fonts/Visby%20Round%20Bold.otf') format('opentype');
-        }
-        @font-face {
-            font-family: 'Visby Round Extra Bold';
-            src: url('https://raw.githubusercontent.com/VeerGosai/SA-Gov-Status/main/Fonts/Visby%20Round%20Extra%20Bold.otf') format('opentype');
-        }
-        @font-face {
-            font-family: 'Visby Round Heavy';
-            src: url('https://raw.githubusercontent.com/VeerGosai/SA-Gov-Status/main/Fonts/Visby%20Round%20Heavy.otf') format('opentype');
-        }
-        @font-face {
-            font-family: 'Visby Round Regular';
-            src: url('https://raw.githubusercontent.com/VeerGosai/SA-Gov-Status/main/Fonts/Visby%20Round%20Regular.otf') format('opentype');
-        }
-    </style>
-
-    <style>
-        /* Set the map container's size */
-        #map {
-            height: 400px;
-            width: 100%;
-        }
-
-        /* Modern styling for text */
-        body {
-            font-family: 'Visby Round Regular', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-
-        h1 {
-            font-family: 'Visby Round Heavy', sans-serif;
-            text-align: center;
-            margin-top: 40px;
-            font-size: 30px;
-        }
-
-        #destination {
-            font-family: 'Visby Round Heavy', sans-serif;
-            font-size: 1.3rem;
-            text-align: center;
-        }
-
-        #last-updated {
-            font-family: 'Visby Round Extra Bold', sans-serif;
-            font-size: 1rem;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        /* Footer Styles */
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            font-family: 'Visby Round Regular', sans-serif;
-        }
-
-        footer a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            footer {
-                position: static;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Where Is Ramaphosa?</h1>
-    <p id="destination">Loading...</p>
-    <p id="last-updated"></p>
-    <div id="map"></div>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <!-- Removed broken flag image -->
+                <h1>Where Is Ramaphosa?</h1>
+            </div>
+            <p class="subtitle">Track the South African President's Movements</p>
+        </header>
+        
+        <main>
+            <!-- Current Location Card with Flag -->
+            <div class="location-card">
+                <div class="location-badge">CURRENT LOCATION</div>
+                <div class="location-content">
+                    <div class="location-flag" id="location-flag">🇿🇦</div>
+                    <div class="location-status" id="current-location-status">Loading...</div>
+                    <div class="location-icon">
+                        <span id="location-icon-symbol">📍</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tracker-card">
+                <div class="status-badge">LAST FLIGHT</div>
+                <div class="journey-details">
+                    <div class="location-item from">
+                        <h3>Departing From</h3>
+                        <p id="departing-location">Loading...</p>
+                    </div>
+                    <div class="journey-arrow">→</div>
+                    <div class="location-item to">
+                        <h3>Arriving At</h3>
+                        <p id="destination-location">Loading...</p>
+                    </div>
+                </div>
+                <div class="time-details">
+                    <div class="time-item">
+                        <h3>Arrival Date</h3>
+                        <p id="destination-date">Loading...</p>
+                    </div>
+                    <div class="time-item">
+                        <h3>Arrival Time</h3>
+                        <p id="destination-time">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <div id="map"></div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Data updated automatically. This is not an official government website.</p>
+            <p class="small">© <span id="current-year"></span> Where Is Ramaphosa</p>
+        </footer>
+    </div>
 
-    <script>
-        // Fetch and display the data from the JSON file
-        fetch('https://raw.githubusercontent.com/VeerGosai/Where-Is-Ramaphosa/main/data.json')
-            .then(response => response.json())
-            .then(data => {
-                // Display destination and last updated date
-                const destination = data.destination === "- -" 
-                    ? `Currently in transit from ${data.departing}` 
-                    : `Current Location: ${data.destination}`;
-
-                document.getElementById('destination').textContent = destination;
-                document.getElementById('last-updated').textContent = `Last Updated: ${data.destination_date} ${data.destination_time}`;
-
-                // Use geocoding to find the coordinates if a destination is provided
-                const location = data.destination === "- -" ? data.departing : data.destination;
-                if (location) {
-                    getCoordinates(location).then(coords => {
-                        if (coords) {
-                            // Initialize the map with the fetched coordinates
-                            let map = L.map('map').setView([coords.lat, coords.lon], 10);
-
-                            // Add OpenStreetMap tiles to the map
-                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            }).addTo(map);
-
-                            // Add a marker at the location
-                            L.marker([coords.lat, coords.lon]).addTo(map)
-                                .bindPopup(`<b>Location:</b> ${location}`)
-                                .openPopup();
-                        }
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                document.getElementById('destination').textContent = 'Error loading data.';
-            });
-
-        // Function to get coordinates from Nominatim (OpenStreetMap)
-        function getCoordinates(city) {
-            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&addressdetails=1&limit=1`;
-
-            return fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.length > 0) {
-                        const location = data[0];
-                        return { lat: location.lat, lon: location.lon };
-                    } else {
-                        console.error('Location not found!');
-                        return null;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error getting coordinates:', error);
-                    return null;
-                });
-        }
-    </script>
-
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
-    <footer>
-        <p>&copy; 2025 Veer Gosai</p>
-        <p>veer@taptic.org</p>
-    </footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <script src="script.js"></script>
 </body>
 </html>
