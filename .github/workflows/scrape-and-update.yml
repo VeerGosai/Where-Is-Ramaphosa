@@ -48,45 +48,48 @@ jobs:
       - name: Update history.json
         if: steps.commit_data.outputs.changes == 'true'
         run: |
-          if [ -f history.json ]; then
-            # Add current data to history with timestamp
-            node -e "
-              const fs = require('fs');
-              const currentData = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-              let history = [];
-              
+          # Add current data to history with timestamp
+          node -e "
+            const fs = require('fs');
+            const currentData = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+            
+            // Add timestamp to the current data
+            const entryWithTimestamp = {
+              ...currentData,
+              timestamp: new Date().toISOString()
+            };
+            
+            let history = [];
+            
+            // Check if history.json exists and read it
+            if (fs.existsSync('history.json')) {
               try {
-                history = JSON.parse(fs.readFileSync('history.json', 'utf8'));
+                const historyContent = fs.readFileSync('history.json', 'utf8');
+                if (historyContent.trim()) {
+                  history = JSON.parse(historyContent);
+                  if (!Array.isArray(history)) {
+                    console.log('History file exists but is not an array, creating new array');
+                    history = [];
+                  }
+                }
               } catch (err) {
-                console.log('Creating new history.json file');
+                console.error('Error reading history.json:', err);
+                console.log('Creating new history array');
               }
-              
-              const entryWithTimestamp = {
-                ...currentData,
-                timestamp: new Date().toISOString()
-              };
-              
-              history.push(entryWithTimestamp);
-              fs.writeFileSync('history.json', JSON.stringify(history, null, 2));
-              console.log('Updated history.json with new entry');
-            "
-            git add history.json
-            git commit -m "Update history log"
-          else
-            # Create history.json if it doesn't exist
-            node -e "
-              const fs = require('fs');
-              const currentData = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-              const history = [{
-                ...currentData,
-                timestamp: new Date().toISOString()
-              }];
-              fs.writeFileSync('history.json', JSON.stringify(history, null, 2));
-              console.log('Created history.json with first entry');
-            "
-            git add history.json
-            git commit -m "Create history log"
-          fi
+            } else {
+              console.log('No history.json found, creating new file');
+            }
+            
+            // Append new entry to history
+            history.push(entryWithTimestamp);
+            
+            // Write updated history back to file
+            fs.writeFileSync('history.json', JSON.stringify(history, null, 2));
+            console.log('Updated history.json with new entry. Total entries:', history.length);
+          "
+          
+          git add history.json
+          git commit -m "Update history log with new flight data" || echo "No changes to history.json"
 
       # Step 8: Push all changes to GitHub Pages branch
       - name: Push changes
