@@ -1,15 +1,44 @@
 [
   {
     "departing": "Tshwane, South Africa",
-    "destination": "Abidjan, Cote d'Ivoire",
-    "destination_time": "07:03PM GMT",
-    "destination_date": "Sun 11-May-2025"
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": ""
   },
   {
     "departing": "Tshwane, South Africa",
-    "destination": "— —",
+    "destination": "Abidjan, Cote d'Ivoire",
+    "destination_time": "07:03PM GMT",
+    "destination_date": "Sun 11-May-2025"
+  },
+  {
+    "departing": "Abidjan, Cote d'Ivoire",
+    "destination": "— —",
     "destination_time": "",
-    "destination_date": "",
-    "timestamp": "2025-05-19T01:08:40.209Z"
+    "destination_date": ""
+  },
+  {
+    "departing": "Abidjan, Cote d'Ivoire",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "11:29PM SAST",
+    "destination_date": "Mon 12-May-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": ""
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Kimberley, South Africa",
+    "destination_time": "10:34AM SAST",
+    "destination_date": "Fri 16-May-2025"
+  },
+  {
+    "departing": "Kimberley, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:37PM SAST",
+    "destination_date": "Fri 16-May-2025"
   }
 ]
