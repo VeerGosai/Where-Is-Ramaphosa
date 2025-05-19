@@ -37,9 +37,57 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
 
-      # Step 6: Commit and push changes to GitHub Pages branch
-      - name: Commit and push changes
+      # Step 6: Commit data.json changes
+      - name: Commit data.json changes
+        id: commit_data
         run: |
           git add data.json
-          git commit -m "Update flight data" || echo "No changes to commit"
-          git push
+          git diff --staged --quiet || (git commit -m "Update flight data" && echo "changes=true" >> $GITHUB_OUTPUT)
+          
+      # Step 7: Update history.json if data.json changed
+      - name: Update history.json
+        if: steps.commit_data.outputs.changes == 'true'
+        run: |
+          if [ -f history.json ]; then
+            # Add current data to history with timestamp
+            node -e "
+              const fs = require('fs');
+              const currentData = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+              let history = [];
+              
+              try {
+                history = JSON.parse(fs.readFileSync('history.json', 'utf8'));
+              } catch (err) {
+                console.log('Creating new history.json file');
+              }
+              
+              const entryWithTimestamp = {
+                ...currentData,
+                timestamp: new Date().toISOString()
+              };
+              
+              history.push(entryWithTimestamp);
+              fs.writeFileSync('history.json', JSON.stringify(history, null, 2));
+              console.log('Updated history.json with new entry');
+            "
+            git add history.json
+            git commit -m "Update history log"
+          else
+            # Create history.json if it doesn't exist
+            node -e "
+              const fs = require('fs');
+              const currentData = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+              const history = [{
+                ...currentData,
+                timestamp: new Date().toISOString()
+              }];
+              fs.writeFileSync('history.json', JSON.stringify(history, null, 2));
+              console.log('Created history.json with first entry');
+            "
+            git add history.json
+            git commit -m "Create history log"
+          fi
+
+      # Step 8: Push all changes to GitHub Pages branch
+      - name: Push changes
+        run: git push
