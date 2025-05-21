@@ -1,6 +1,150 @@
 [
   {
     "departing": "Tshwane, South Africa",
+    "destination": "Ysterplaat AFB",
+    "destination_time": "10:01AM SAST",
+    "destination_date": "Mon 24-Feb-2025"
+  },
+  {
+    "departing": "Ysterplaat AFB",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "07:27PM SAST",
+    "destination_date": "Wed 26-Feb-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Near Gaborone",
+    "destination_time": "08:23AM CAT",
+    "destination_date": "Sat 01-Mar-2025"
+  },
+  {
+    "departing": "Near Windhoek",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:48PM SAST",
+    "destination_date": "Sat 01-Mar-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Cape Town, South Africa",
+    "destination_time": "07:26PM SAST",
+    "destination_date": "Sun 02-Mar-2025"
+  },
+  {
+    "departing": "Cape Town, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "04:12PM SAST",
+    "destination_date": "Wed 05-Mar-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Bloemfontein, South Africa",
+    "destination_time": "10:02AM SAST",
+    "destination_date": "Sun 09-Mar-2025"
+  },
+  {
+    "departing": "Bloemfontein, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:54PM SAST",
+    "destination_date": "Sun 09-Mar-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Bloemfontein, South Africa",
+    "destination_time": "08:59AM SAST",
+    "destination_date": "Mon 10-Mar-2025"
+  },
+  {
+    "departing": "Bloemfontein, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:51PM SAST",
+    "destination_date": "Mon 10-Mar-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Cape Town, South Africa",
+    "destination_time": "11:23AM SAST",
+    "destination_date": "Tue 11-Mar-2025"
+  },
+  {
+    "departing": "Cape Town, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "06:23PM SAST",
+    "destination_date": "Fri 14-Mar-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Cape Town, South Africa",
+    "destination_time": "09:34AM SAST",
+    "destination_date": "Tue 18-Mar-2025"
+  },
+  {
+    "departing": "Cape Town, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "07:50PM SAST",
+    "destination_date": "Wed 19-Mar-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Near Windhoek",
+    "destination_time": "09:22AM CAT",
+    "destination_date": "Fri 21-Mar-2025"
+  },
+  {
+    "departing": "Near Windhoek",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:36PM SAST",
+    "destination_date": "Fri 21-Mar-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Ysterplaat AFB",
+    "destination_time": "06:32PM SAST",
+    "destination_date": "Mon 31-Mar-2025"
+  },
+  {
+    "departing": "Ysterplaat AFB",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "03:58PM SAST",
+    "destination_date": "Thu 03-Apr-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Cape Town, South Africa",
+    "destination_time": "09:40PM SAST",
+    "destination_date": "Tue 08-Apr-2025"
+  },
+  {
+    "departing": "Cape Town, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "02:45PM SAST",
+    "destination_date": "Wed 09-Apr-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Port Elizabeth, South Africa",
+    "destination_time": "01:25PM SAST",
+    "destination_date": "Tue 15-Apr-2025"
+  },
+  {
+    "departing": "Port Elizabeth, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "06:01PM SAST",
+    "destination_date": "Wed 16-Apr-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Near Maseru",
+    "destination_time": "10:12AM SAST",
+    "destination_date": "Wed 23-Apr-2025"
+  },
+  {
+    "departing": "Near Maseru",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "04:06PM SAST",
+    "destination_date": "Wed 23-Apr-2025"
+  },
+  {
+    "departing": "Tshwane, South Africa",
     "destination": "— —",
     "destination_time": "",
     "destination_date": ""
