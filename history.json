@@ -289,5 +289,12 @@
     "destination_time": "10:19AM SAST",
     "destination_date": "Sat 24-May-2025",
     "timestamp": "2025-05-24T10:19:13.987Z"
+  },
+  {
+    "departing": "Durban, South Africa",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-05-24T14:16:48.221Z"
   }
 ]
