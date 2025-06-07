@@ -352,5 +352,12 @@
     "destination_time": "02:58PM SAST",
     "destination_date": "Thu 05-Jun-2025",
     "timestamp": "2025-06-05T14:20:31.499Z"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-06-07T06:27:32.545Z"
   }
 ]
