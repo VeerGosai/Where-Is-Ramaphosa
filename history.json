@@ -457,5 +457,12 @@
     "destination_time": "12:27PM SAST",
     "destination_date": "Sat 05-Jul-2025",
     "timestamp": "2025-07-05T12:38:14.488Z"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Nelspruit, South Africa",
+    "destination_time": "08:23AM SAST",
+    "destination_date": "Sat 12-Jul-2025",
+    "timestamp": "2025-07-12T06:29:21.413Z"
   }
 ]
