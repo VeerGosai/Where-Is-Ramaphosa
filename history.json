@@ -541,5 +541,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-07-25T14:20:36.954Z"
+  },
+  {
+    "departing": "Kimberley, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "04:50PM SAST",
+    "destination_date": "Fri 25-Jul-2025",
+    "timestamp": "2025-07-25T16:27:40.748Z"
   }
 ]
