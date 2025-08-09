@@ -548,5 +548,12 @@
     "destination_time": "04:50PM SAST",
     "destination_date": "Fri 25-Jul-2025",
     "timestamp": "2025-07-25T16:27:40.748Z"
+  },
+  {
+    "departing": "Hoedspruit, Limpopo, ZA",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "03:18PM SAST",
+    "destination_date": "Sat 09-Aug-2025",
+    "timestamp": "2025-08-09T14:18:55.334Z"
   }
 ]
