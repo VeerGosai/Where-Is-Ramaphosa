@@ -74,3 +74,84 @@ function hexToRgb(hex) {
 function truncateText(text, maxLength) {
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 }
+
+// Hardware-aware concurrency (used by geocoding)
+window.MAX_CONCURRENCY = Math.min(8, (navigator.hardwareConcurrency || 4));
+
+// Tiny top progress bar controller
+(function () {
+    let el, bar, active = false, value = 0, finishTimer = null;
+
+    function ensure() {
+        if (!el) el = document.getElementById('top-progress');
+        if (el && !bar) bar = el.querySelector('.bar');
+        return !!(el && bar);
+    }
+
+    function set(val) {
+        if (!ensure()) return;
+        value = Math.max(0, Math.min(1, val));
+        bar.style.width = (value * 100) + '%';
+    }
+
+    function show() {
+        if (!ensure()) return;
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
+    }
+
+    function hide() {
+        if (!ensure()) return;
+        el.style.opacity = '0';
+        el.style.visibility = 'hidden';
+        bar.style.width = '0%';
+    }
+
+    window.progressBar = {
+        start() {
+            clearTimeout(finishTimer);
+            active = true;
+            show();
+            set(0.08);
+        },
+        set(p) {
+            if (!active) show();
+            set(p);
+        },
+        increment(delta = 0.03) {
+            if (!active) show();
+            set(value + delta);
+        },
+        finish() {
+            if (!ensure()) return;
+            set(1);
+            finishTimer = setTimeout(() => {
+                active = false;
+                hide();
+            }, 250);
+        }
+    };
+})();
+//
+// Toggle service status helper for footer status card
+window.setServiceStatus = function setServiceStatus(liId, online) {
+    const row = document.getElementById(liId);
+    if (!row) return;
+    const dot = row.querySelector('.status-dot');
+    const text = row.querySelector('.status-text');
+    if (!dot || !text) return;
+
+    // Reset classes
+    dot.classList.remove('online', 'offline');
+    text.classList.remove('online', 'offline');
+
+    if (online) {
+        dot.classList.add('online');
+        text.classList.add('online');
+        text.textContent = 'Online';
+    } else {
+        dot.classList.add('offline');
+        text.classList.add('offline');
+        text.textContent = 'Offline';
+    }
+};

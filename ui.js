@@ -34,6 +34,12 @@ function updateCurrentLocation(data) {
     setTimeout(() => {
         locationCard.classList.remove('location-update');
     }, 1000);
+    
+    // After setting texts/flags, ensure skeleton is removed
+    const status = document.getElementById('current-location-status');
+    if (status) {
+        status.classList.remove('skeleton', 'skeleton-text');
+    }
 }
 
 function getCountryFlag(destination) {
@@ -144,9 +150,9 @@ function getCountryFlag(destination) {
         "United Kingdom": "🇬🇧",
         "UK": "🇬🇧",
         "Great Britain": "🇬🇧",
-        "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-        "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-        "Wales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+        "England": "🏴",
+        "Scotland": "🏴",
+        "Wales": "🏴",
         "Vatican City": "🇻🇦",
         
         // Americas
@@ -378,6 +384,15 @@ function displayData(data) {
     document.getElementById('destination-date').textContent = data.destination_date;
     document.getElementById('destination-time').textContent = data.destination_time;
     
+    // Remove skeleton loaders on first data render
+    ['departing-location','destination-location','destination-date','destination-time'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        // If child is a skeleton span, clear it before setting class animation
+        // (textContent above already replaced content)
+        el.classList.remove('skeleton', 'skeleton-text');
+    });
+
     // Add animation to elements as they update
     const elements = [
         'departing-location', 
@@ -438,6 +453,7 @@ function initializeFlightSelector() {
 
 // Function to apply user-selected flight display settings
 function applyFlightSettings() {
+    if (window.progressBar) progressBar.start();
     // Get settings from UI
     const countSelect = document.getElementById('flight-count');
     const countValue = countSelect.value;
@@ -473,6 +489,9 @@ function applyFlightSettings() {
         applyButton.textContent = originalText;
         applyButton.classList.remove('settings-applied');
     }, 1500);
+    setTimeout(() => {
+        if (window.progressBar) progressBar.finish();
+    }, 600);
 }
 
 // Populate flight selector with checkboxes
@@ -593,6 +612,8 @@ function initializeFlightControls() {
 
 // Call this function during initialization
 document.addEventListener('DOMContentLoaded', function() {
-    // Add to existing DOMContentLoaded event or call separately
+    // Initialize control defaults
     initializeFlightControls();
+    // If needed, mark placeholders as skeleton (already in HTML)
+    // No-op here; removal happens in displayData/updateCurrentLocation
 });

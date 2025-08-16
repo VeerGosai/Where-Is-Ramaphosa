@@ -13,32 +13,57 @@ let isDarkMode = false;
 let mapInstance = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize dark mode
+    progressBar.start();
+    // Initialize dark mode (now supports Auto/Light/Dark)
     initDarkMode();
+
+    // Wire up theme toggle (click + keyboard)
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.style.display = ''; // ensure visible
+        const activate = () => cycleThemeMode();
+        themeToggle.addEventListener('click', activate);
+        themeToggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                activate();
+            }
+        });
+    }
     
     // Set current year in the footer
     document.getElementById('current-year').textContent = new Date().getFullYear();
     
-    // Fetch the data from data.json
-    fetch('data.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
+    // Kick off parallel initialization
+    const latestFlightTask = fetch('data.json')
+        .then(r => {
+            if (!r.ok) throw new Error('Failed to fetch data.json');
+            progressBar.increment(0.08);
+            return r.json();
         })
         .then(data => {
             displayData(data);
             updateCurrentLocation(data);
-            initializeMap(data);
+            progressBar.increment(0.08);
+            // initializeMap now returns a Promise that resolves after plotting
+            return initializeMap(data).then(() => {
+                progressBar.increment(0.12);
+            });
         })
-        .catch(error => {
-            console.error('There was a problem fetching the data:', error);
+        .catch(err => {
+            console.error(err);
             displayError();
         });
-    
-    // Fetch and display historical flight data
-    fetchHistoricalFlights();
+
+    const historyTask = fetchHistoricalFlights()
+        .then(() => {
+            progressBar.increment(0.18);
+        })
+        .catch(err => console.error(err));
+
+    Promise.allSettled([latestFlightTask, historyTask]).finally(() => {
+        progressBar.finish();
+    });
     
     // Set up history sorting buttons
     document.getElementById('sort-by-date').addEventListener('click', function() {
@@ -56,51 +81,83 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the flight selector with empty state
     initializeFlightSelector();
-
-    // Remove theme toggle button if it exists
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.style.display = 'none';
-    }
 });
 
-// Initialize dark mode based on system preference only
+// Initialize dark mode based on saved preference or system preference
 function initDarkMode() {
-    // Check if user prefers dark mode based on system preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        enableDarkMode();
-    } else {
-        disableDarkMode(); // Default to light mode
-    }
-    
-    // Add listener for changes to color scheme preference
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-        if (event.matches) {
-            enableDarkMode();
-        } else {
-            disableDarkMode();
+    const saved = localStorage.getItem('theme-mode') || 'auto';
+    applyTheme(saved);
+
+    // Update on system change only when in auto
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    media.addEventListener('change', (event) => {
+        const mode = localStorage.getItem('theme-mode') || 'auto';
+        if (mode === 'auto') {
+            applyTheme('auto');
         }
-        
-        // Update map tiles if map exists
         if (map) {
-            // Force map to redraw tiles with new styles
-            setTimeout(() => {
-                map.invalidateSize();
-            }, 100);
+            setTimeout(() => map.invalidateSize(), 100);
         }
     });
 }
 
-// Enable dark mode
-function enableDarkMode() {
-    document.body.classList.add('dark-mode');
-    isDarkMode = true;
+function cycleThemeMode() {
+    const current = localStorage.getItem('theme-mode') || 'auto';
+    const next = current === 'auto' ? 'light' : current === 'light' ? 'dark' : 'auto';
+    applyTheme(next);
 }
 
-// Disable dark mode
+function applyTheme(mode) {
+    localStorage.setItem('theme-mode', mode);
+    document.body.dataset.theme = mode; // optional hook
+    // Resolve effective dark state
+    const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const dark = mode === 'dark' || (mode === 'auto' && systemDark);
+
+    if (dark) {
+        document.body.classList.add('dark-mode');
+        isDarkMode = true;
+    } else {
+        document.body.classList.remove('dark-mode');
+        isDarkMode = false;
+    }
+    updateThemeToggleUI(mode);
+
+    if (map) {
+        setTimeout(() => map.invalidateSize(), 100);
+    }
+}
+
+function updateThemeToggleUI(mode) {
+    const icon = document.getElementById('theme-toggle-icon');
+    const text = document.getElementById('theme-toggle-text');
+    const btn = document.getElementById('theme-toggle');
+    if (!icon || !text || !btn) return;
+
+    if (mode === 'light') {
+        icon.textContent = '☀️';
+        text.textContent = 'Light';
+        btn.setAttribute('data-mode', 'light');
+        btn.setAttribute('aria-pressed', 'false');
+    } else if (mode === 'dark') {
+        icon.textContent = '🌙';
+        text.textContent = 'Dark';
+        btn.setAttribute('data-mode', 'dark');
+        btn.setAttribute('aria-pressed', 'true');
+    } else {
+        icon.textContent = '🌓';
+        text.textContent = 'Auto';
+        btn.setAttribute('data-mode', 'auto');
+        btn.setAttribute('aria-pressed', String(isDarkMode));
+    }
+}
+
+// Enable/Disable helpers (kept for compatibility)
+function enableDarkMode() {
+    applyTheme('dark');
+}
 function disableDarkMode() {
-    document.body.classList.remove('dark-mode');
-    isDarkMode = false;
+    applyTheme('light');
 }
 
 // Import other modules via script tags in HTML

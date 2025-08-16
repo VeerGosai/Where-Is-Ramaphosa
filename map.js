@@ -15,11 +15,23 @@ function initializeMap(data) {
     map = L.map('map').setView([-30.5595, 22.9375], 5);
     mapInstance = map; // Store map reference for dark mode updates
     
-    // Add OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // Add dark tile layer (CartoDB Dark Matter)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, '
+                   + '&copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
     }).addTo(map);
-    
+
+    // Gentle progress tick when tiles load
+    map.once('load', () => {
+        if (window.progressBar) progressBar.increment(0.05);
+        // Mark CartoCDN tiles frontend online when tiles are loaded
+        if (typeof window.setServiceStatus === 'function') {
+            window.setServiceStatus('status-carto-tiles', true);
+        }
+    });
+
     // Add CSS for the map markers
     addMapStyles();
     
@@ -28,11 +40,12 @@ function initializeMap(data) {
         recenterMap();
     });
     
-    // Plot current flight and zoom to it
-    plotCurrentFlight(data);
+    // Plot current flight and zoom to it (returns a Promise)
+    const plotted = plotCurrentFlight(data);
     
     // Prefetch historical flight data so it's ready when needed
     fetchHistoricalFlightLocations();
+    return plotted; // allow caller to await
 }
 
 function recenterMap() {
@@ -66,80 +79,52 @@ function plotCurrentFlight(data) {
     // Skip if no data or in transit
     if (!data || isInTransit(data.destination)) {
         console.log('No current flight to plot or flight is in transit');
-        return;
+        return Promise.resolve();
     }
-    
-    // Show map-specific loading indicator
+
     showMapLoading();
-    
-    // Plot markers for departure and destination
-    addLocationMarker(data.departing, false, () => {
-        addLocationMarker(data.destination, true, () => {
-            // Zoom to show both markers once both are added
-            if (map.departureCoords && map.destinationCoords) {
-                currentFlightBounds = [
-                    map.departureCoords,
-                    map.destinationCoords
-                ];
-                
-                map.fitBounds(currentFlightBounds, { padding: [50, 50] });
-            }
-            
-            // Hide map loading indicator
-            hideMapLoading();
-        });
+    if (window.progressBar) progressBar.increment(0.05);
+
+    // Geocode both in parallel
+    return Promise.all([
+        geocodeName(data.departing),
+        geocodeName(data.destination)
+    ]).then(([fromCoords, toCoords]) => {
+        // Update OSM API status based on first-flight geocode success
+        if (typeof window.setServiceStatus === 'function') {
+            const ok = !!(fromCoords || toCoords);
+            window.setServiceStatus('status-osm-api', ok);
+        }
+
+        if (fromCoords) createMarkerAndLine(fromCoords, false);
+        if (toCoords) createMarkerAndLine(toCoords, true);
+
+        if (fromCoords && toCoords) {
+            currentFlightBounds = [fromCoords, toCoords];
+            map.fitBounds(currentFlightBounds, { padding: [50, 50] });
+        }
+    }).finally(() => {
+        hideMapLoading();
     });
 }
 
-// Function to geocode a location name and add a marker
-function addLocationMarker(locationName, isDestination = false, callback = () => {}) {
-    // Skip API call for in-transit destinations
-    if (isInTransit(locationName)) {
-        console.log('Skipping geocoding for transit indicator:', locationName);
-        callback(); // Call callback to continue the flow
-        return;
-    }
-    
-    // Skip departure markers if setting is disabled
-    if (!isDestination && !flightDisplaySettings.showCurrentDeparture) {
-        console.log('Skipping departure marker due to settings');
-        callback();
-        return;
-    }
+// Promise-based geocoder with cache
+function geocodeName(locationName) {
+    if (isInTransit(locationName)) return Promise.resolve(null);
+    if (coordinatesCache[locationName]) return Promise.resolve(coordinatesCache[locationName]);
 
-    // Check cache first
-    if (coordinatesCache[locationName]) {
-        const coords = coordinatesCache[locationName];
-        createMarkerAndLine(coords, isDestination);
-        callback();
-        return;
-    }
-    
-    // Using Nominatim geocoding service
-    const encodedLocation = encodeURIComponent(locationName);
-    
-    showMapLoading(); // Show map-specific loading indicator
-    fetch(`https://nominatim.openstreetmap.org/search?q=${encodedLocation}&format=json&limit=1`)
-        .then(response => response.json())
+    const encoded = encodeURIComponent(locationName);
+    return fetch(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1`)
+        .then(r => r.json())
         .then(data => {
             if (data && data.length > 0) {
-                const lat = parseFloat(data[0].lat);
-                const lon = parseFloat(data[0].lon);
-                const coords = [lat, lon];
-                
-                // Cache the coordinates for future use
+                const coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
                 coordinatesCache[locationName] = coords;
-                
-                createMarkerAndLine(coords, isDestination);
+                return coords;
             }
-            callback();
-            hideMapLoading(); // Hide map-specific loading indicator
+            return null;
         })
-        .catch(error => {
-            console.error('Error geocoding location:', error);
-            hideMapLoading(); // Hide map-specific loading indicator even if error
-            callback();
-        });
+        .catch(() => null);
 }
 
 function createMarkerAndLine(coords, isDestination) {

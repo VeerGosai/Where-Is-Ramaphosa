@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Where Is Ramaphosa? | Track South African Presidential Flights</title>
+    <title>Where is Ramaphosa status</title>
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="Track President Cyril Ramaphosa's official movements by following SAAF Squadron 21 flights. Real-time updates on presidential travel across South Africa and internationally.">
@@ -33,7 +33,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Replace Roboto with Poppins and add preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://veergosai.github.io/Where-Is-Ramaphosa/">
@@ -53,8 +57,16 @@
       }
     }
     </script>
+    
+    <!-- Color Scheme Meta Tags -->
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f9fa">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121212">
 </head>
 <body>
+    <!-- Global top progress bar -->
+    <div id="top-progress" class="top-progress" aria-hidden="true"><div class="bar"></div></div>
+    
     <div id="loading-overlay" class="loading-overlay">
         <div class="loading-spinner"></div>
         <p>Mapping Presidential Movements...</p>
@@ -65,19 +77,8 @@
             <div class="logo">
                 <h1>Where Is Ramaphosa?</h1>
             </div>
-            <div class="theme-toggle" id="theme-toggle">
-                <span class="theme-toggle-icon" id="theme-toggle-icon">☀️</span>
-                <span id="theme-toggle-text">Light Mode</span>
-            </div>
-            <p class="subtitle">Track the South African President's Movements</p>
-            
-            <!-- Navigation -->
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="index.html" class="active">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-            </nav>
+            <!-- Removed subtitle -->
+            <!-- Removed nav (only contained Home) -->
         </header>
         
         <main>
@@ -86,7 +87,9 @@
                 <div class="location-badge">CURRENT LOCATION</div>
                 <div class="location-content">
                     <div class="location-flag" id="location-flag">🇿🇦</div>
-                    <div class="location-status" id="current-location-status">Loading...</div>
+                    <div class="location-status" id="current-location-status">
+                        <span class="skeleton skeleton-text" style="width:60%"></span>
+                    </div>
                     <div class="location-icon">
                         <span id="location-icon-symbol">📍</span>
                     </div>
@@ -98,29 +101,34 @@
                 <div class="journey-details">
                     <div class="location-item from">
                         <h3>Departing From</h3>
-                        <p id="departing-location">Loading...</p>
+                        <p id="departing-location"><span class="skeleton skeleton-text" style="width:70%"></span></p>
                     </div>
                     <div class="journey-arrow">→</div>
                     <div class="location-item to">
                         <h3>Arriving At</h3>
-                        <p id="destination-location">Loading...</p>
+                        <p id="destination-location"><span class="skeleton skeleton-text" style="width:70%"></span></p>
                     </div>
                 </div>
                 <div class="time-details">
                     <div class="time-item">
                         <h3>Arrival Date</h3>
-                        <p id="destination-date">Loading...</p>
+                        <p id="destination-date"><span class="skeleton skeleton-text" style="width:50%"></span></p>
                     </div>
                     <div class="time-item">
                         <h3>Arrival Time</h3>
-                        <p id="destination-time">Loading...</p>
+                        <p id="destination-time"><span class="skeleton skeleton-text" style="width:40%"></span></p>
                     </div>
                 </div>
             </div>
             
             <div class="map-container">
                 <div id="map"></div>
-                <button id="recenter-map" class="map-control-button" title="Recenter Map">
+                <button
+                    id="recenter-map"
+                    class="map-control-button"
+                    title="Recenter Map"
+                    aria-label="Recenter map to current flight"
+                >
                     <span class="recenter-icon">⌖</span>
                 </button>
                 <div id="map-loading-overlay" class="map-loading-overlay">
@@ -183,35 +191,78 @@
                     </details>
                 </div>
                 
-                <div class="history-controls">
-                    <button id="sort-by-date" class="history-button">Sort by Date</button>
-                    <button id="sort-by-destination" class="history-button">Sort by Destination</button>
-                    <span class="history-count">Loading flights...</span>
-                </div>
-                
-                <div class="history-container">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>Departure</th>
-                                <th>Destination</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-data">
-                            <tr>
-                                <td colspan="4" class="loading-message">Loading flight history...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <!-- Collapsed by default: history controls + table -->
+                <details class="history-collapsible">
+                    <summary>Show flight history</summary>
+                    <div class="history-controls">
+                        <button id="sort-by-date" class="history-button">Sort by Date</button>
+                        <button id="sort-by-destination" class="history-button">Sort by Destination</button>
+                        <span class="history-count">Loading flights...</span>
+                    </div>
+                    <div class="history-container">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Departure</th>
+                                    <th>Destination</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-data">
+                                <tr>
+                                    <td colspan="4" class="loading-message">Loading flight history...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
             </div>
         </main>
         
         <footer>
             <p>Data updated automatically. This is not an official government website.</p>
-            <p class="small">© <span id="current-year"></span> Where Is Ramaphosa | <a href="about.html">About</a> | <a href="sitemap.xml">Sitemap</a></p>
+            <p class="small">© <span id="current-year"></span> Where Is Ramaphosa | <a href="sitemap.xml">Sitemap</a></p>
+            <div class="social-links">
+                <a href="https://veergosai.com" target="_blank" rel="noopener noreferrer" aria-label="Website: veergosai.com">
+                    <i class="fa-solid fa-globe icon" aria-hidden="true"></i>
+                    <span>veergosai.com</span>
+                </a>
+                <a href="https://github.com/VeerGosai" target="_blank" rel="noopener noreferrer" aria-label="GitHub: VeerGosai">
+                    <i class="fa-brands fa-github icon" aria-hidden="true"></i>
+                    <span>@VeerGosai</span>
+                </a>
+            </div>
+
+            <!-- Web scraper status box -->
+            <div class="scraper-status" role="status" aria-live="polite" aria-label="Web scraper status">
+                <div class="scraper-status-header">Web scraper status</div>
+                <ul class="scraper-status-list">
+                    <li class="status-item">
+                        <span class="status-dot online" aria-hidden="true"></span>
+                        <span class="status-host">gh01.runner.github.com</span>
+                        <span class="status-text online">Online</span>
+                    </li>
+                    <li class="status-item">
+                        <span class="status-dot offline" aria-hidden="true"></span>
+                        <span class="status-host">prod1-ec2.aws.taptic.org</span>
+                        <span class="status-text offline">Offline</span>
+                    </li>
+                    <!-- New: CartoCDN tiles (frontend) -->
+                    <li id="status-carto-tiles" class="status-item">
+                        <span class="status-dot offline" aria-hidden="true"></span>
+                        <span class="status-host">basemaps.cartocdn.com</span>
+                        <span class="status-text offline">Offline</span>
+                    </li>
+                    <!-- New: OpenStreetMap API (Nominatim) -->
+                    <li id="status-osm-api" class="status-item">
+                        <span class="status-dot offline" aria-hidden="true"></span>
+                        <span class="status-host">nominatim.openstreetmap.org</span>
+                        <span class="status-text offline">Offline</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="version-info">Version 1.0</div>
         </footer>
     </div>
 

@@ -2,7 +2,8 @@
 let historicalFlights = [];
 let requestQueue = [];
 let processingQueue = false;
-const maxConcurrentRequests = 3; // Limit concurrent requests to Nominatim
+// Use hardware-aware concurrency (fallback to 6)
+const maxConcurrentRequests = (typeof MAX_CONCURRENCY !== 'undefined' ? MAX_CONCURRENCY : 6);
 
 function fetchHistoricalFlightLocations() {
     fetch('history.json')
@@ -61,6 +62,7 @@ function hideHistoricalFlights() {
 
 function plotHistoricalFlights(flights) {
     showMapLoading(); // Use map-specific loading
+    if (window.progressBar) progressBar.start(); // show top bar during plotting
     
     // Clear existing markers first
     hideHistoricalFlights();
@@ -135,6 +137,12 @@ function plotHistoricalFlights(flights) {
     
     function checkCompletion() {
         console.log(`Flight processing: ${completedFlights.count}/${completedFlights.target}`);
+
+        // Update progress proportionally
+        if (window.progressBar && completedFlights.target > 0) {
+            const ratio = completedFlights.count / completedFlights.target;
+            progressBar.set(Math.min(0.95, 0.2 + ratio * 0.7));
+        }
         
         if (completedFlights.count >= completedFlights.target) {
             // All flights processed, fit map to bounds if any
@@ -148,6 +156,7 @@ function plotHistoricalFlights(flights) {
             // Hide map loading
             setTimeout(() => {
                 hideMapLoading();
+                if (window.progressBar) progressBar.finish();
             }, 500);
         }
     }
@@ -258,16 +267,16 @@ function processGeocodingQueue() {
 
 function fetchHistoricalFlights() {
     console.log('Fetching historical flights...');
-    fetch('history.json')
+    // Return the promise chain so callers can await progress
+    return fetch('history.json')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return response.text(); // Get as text first to debug JSON issues
+            return response.text();
         })
         .then(text => {
             try {
-                // Replace potential special dash characters with standard ones
                 const cleanedText = text.replace(/— —/g, '-- --');
                 return JSON.parse(cleanedText);
             } catch (error) {
