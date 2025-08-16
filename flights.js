@@ -5,6 +5,11 @@ let processingQueue = false;
 // Use hardware-aware concurrency (fallback to 6)
 const maxConcurrentRequests = (typeof MAX_CONCURRENCY !== 'undefined' ? MAX_CONCURRENCY : 6);
 
+// Live geocoding counters for UI
+let geoTotal = 0;
+let geoDone = 0;
+let geoStartTs = 0; // start time for ETA
+
 function fetchHistoricalFlightLocations() {
     fetch('history.json')
         .then(response => response.json())
@@ -61,25 +66,32 @@ function hideHistoricalFlights() {
 }
 
 function plotHistoricalFlights(flights) {
-    showMapLoading(); // Use map-specific loading
-    if (window.progressBar) progressBar.start(); // show top bar during plotting
-    
-    // Clear existing markers first
+    showMapLoading();
+    if (window.progressBar) progressBar.start();
     hideHistoricalFlights();
-    
     if (!flights || flights.length === 0) {
-        hideMapLoading(); // Use map-specific loading
-        console.log('No flights to plot');
+        hideMapLoading();
         return;
     }
-    
+
+    // Compute total geocoding tasks (parallel via queue)
+    geoTotal = flights.reduce((acc, f) => {
+        let add = 0;
+        if (f && f.departing && !isInTransit(f.departing)) add++;
+        if (f && f.destination && !isInTransit(f.destination)) add++;
+        return acc + add;
+    }, 0);
+    geoDone = 0;
+    geoStartTs = Date.now();
+    updateGeoProgress();
+
     // Generate a color gradient for the flights
     const colors = generateColorGradient('#FF5733', '#3498DB', flights.length);
-    
+
     // Keep track of bounds to adjust view
     const bounds = [];
     const completedFlights = { count: 0, target: flights.length * 2 }; // Count both departure and destination
-    
+
     // Process each flight
     flights.forEach((flight, index) => {
         // Skip flights with transit indicators
@@ -87,29 +99,29 @@ function plotHistoricalFlights(flights) {
             completedFlights.count += 2; // Count as completed
             return;
         }
-        
+
         // Geocode both locations
         geocodeLocation(flight.departing, (fromCoords) => {
             completedFlights.count++;
             checkCompletion();
-            
+
             geocodeLocation(flight.destination, (toCoords) => {
                 completedFlights.count++;
-                
+
                 if (fromCoords && toCoords) {
                     // Add to bounds
                     bounds.push(fromCoords);
                     bounds.push(toCoords);
-                    
+
                     // Create markers if enabled
                     if (flightDisplaySettings.showMarkers) {
                         const fromMarker = createFlightMarker(fromCoords, index + 1, colors[index]);
                         const toMarker = createFlightMarker(toCoords, index + 1, colors[index]);
-                        
+
                         if (fromMarker) historicalFlightMarkers.push(fromMarker);
                         if (toMarker) historicalFlightMarkers.push(toMarker);
                     }
-                    
+
                     // Create flight path if enabled
                     if (flightDisplaySettings.showRoutes) {
                         const path = L.polyline([fromCoords, toCoords], {
@@ -117,7 +129,7 @@ function plotHistoricalFlights(flights) {
                             weight: 3,
                             opacity: 0.8
                         }).addTo(map);
-                        
+
                         // Add popup with flight info
                         path.bindPopup(`
                             <b>Flight #${index + 1}</b><br>
@@ -125,16 +137,16 @@ function plotHistoricalFlights(flights) {
                             To: ${flight.destination}<br>
                             Date: ${flight.destination_date || 'Unknown'}
                         `);
-                        
+
                         historicalFlightPaths.push(path);
                     }
                 }
-                
+
                 checkCompletion();
             });
         });
     });
-    
+
     function checkCompletion() {
         console.log(`Flight processing: ${completedFlights.count}/${completedFlights.target}`);
 
@@ -143,7 +155,7 @@ function plotHistoricalFlights(flights) {
             const ratio = completedFlights.count / completedFlights.target;
             progressBar.set(Math.min(0.95, 0.2 + ratio * 0.7));
         }
-        
+
         if (completedFlights.count >= completedFlights.target) {
             // All flights processed, fit map to bounds if any
             console.log('All flights processed');
@@ -152,10 +164,11 @@ function plotHistoricalFlights(flights) {
                 currentFlightBounds = bounds;
                 map.fitBounds(bounds, { padding: [30, 30] });
             }
-            
-            // Hide map loading
+
+            // Hide map loading + geo indicator
             setTimeout(() => {
                 hideMapLoading();
+                finishGeoProgress();
                 if (window.progressBar) progressBar.finish();
             }, 500);
         }
@@ -187,23 +200,30 @@ function geocodeLocation(locationName, callback) {
     // Skip geocoding for transit indicators
     if (isInTransit(locationName)) {
         console.log('Skipping geocoding for transit indicator:', locationName);
-        callback(null); // Call callback with null to indicate no coordinates
+        callback(null);
         return;
     }
-    
+
     // Check cache first
     if (coordinatesCache && coordinatesCache[locationName]) {
         console.log('Using cached coordinates for:', locationName);
+        // Count as done for the geo UI
+        geoDone++;
+        updateGeoProgress();
         callback(coordinatesCache[locationName]);
         return;
     }
-    
-    // Add to queue instead of executing immediately
+
+    // Add to queue instead of executing immediately; wrap callback to update counts
     requestQueue.push({
         locationName,
-        callback
+        callback: (coords) => {
+            geoDone++;
+            updateGeoProgress();
+            callback(coords);
+        }
     });
-    
+
     // Start processing the queue if not already running
     if (!processingQueue) {
         processGeocodingQueue();
@@ -217,20 +237,19 @@ function processGeocodingQueue() {
         // Hide loading when all requests are done
         setTimeout(() => {
             hideMapLoading(); // Use map-specific loading
-        }, 500); // Small delay to ensure all callbacks have finished
+        }, 500);
         return;
     }
-    
+
     processingQueue = true;
-    
+
     // Process multiple requests in parallel, up to the limit
     const batch = requestQueue.splice(0, maxConcurrentRequests);
     const promises = batch.map(request => {
         return new Promise((resolve) => {
-            // Using Nominatim geocoding service
             const encodedLocation = encodeURIComponent(request.locationName);
             showMapLoading(); // Use map-specific loading
-            
+
             fetch(`https://nominatim.openstreetmap.org/search?q=${encodedLocation}&format=json&limit=1`)
                 .then(response => response.json())
                 .then(data => {
@@ -238,11 +257,10 @@ function processGeocodingQueue() {
                         const lat = parseFloat(data[0].lat);
                         const lon = parseFloat(data[0].lon);
                         const coords = [lat, lon];
-                        
-                        // Cache the result
+
                         if (!coordinatesCache) coordinatesCache = {};
                         coordinatesCache[request.locationName] = coords;
-                        
+
                         request.callback(coords);
                     } else {
                         request.callback(null);
@@ -257,12 +275,54 @@ function processGeocodingQueue() {
                 });
         });
     });
-    
+
     // Continue processing after this batch is done
     Promise.all(promises).then(() => {
-        // Small delay to avoid overwhelming the API
-        setTimeout(processGeocodingQueue, 1000);
+        setTimeout(processGeocodingQueue, 200); // small spacing to stay polite
     });
+}
+
+// Geo-progress helpers
+function updateGeoProgress() {
+    const box = document.getElementById('geo-progress');
+    const doneEl = document.getElementById('geo-done');
+    const totalEl = document.getElementById('geo-total');
+    const etaEl = document.getElementById('geo-eta');
+    if (!box || !doneEl || !totalEl) return;
+
+    totalEl.textContent = String(geoTotal);
+    doneEl.textContent = String(geoDone);
+    box.hidden = geoTotal === 0;
+
+    // ETA
+    if (etaEl) {
+        const remaining = Math.max(geoTotal - geoDone, 0);
+        if (geoDone > 0 && remaining > 0) {
+            const elapsedMs = Math.max(Date.now() - geoStartTs, 1);
+            const avgPerTaskMs = elapsedMs / geoDone;
+            const etaSec = Math.ceil((remaining * avgPerTaskMs) / 1000);
+            etaEl.textContent = `ETA ${formatETA(etaSec)}`;
+        } else if (remaining === 0 && geoTotal > 0) {
+            etaEl.textContent = 'ETA 00:00';
+        } else {
+            etaEl.textContent = 'ETA —';
+        }
+    }
+}
+
+function finishGeoProgress() {
+    const box = document.getElementById('geo-progress');
+    const etaEl = document.getElementById('geo-eta');
+    if (etaEl) etaEl.textContent = 'ETA 00:00';
+    if (box) box.hidden = true;
+}
+
+// Simple mm:ss formatter
+function formatETA(totalSeconds) {
+    const s = Math.max(0, totalSeconds | 0);
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
 }
 
 function fetchHistoricalFlights() {

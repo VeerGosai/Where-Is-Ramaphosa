@@ -644,13 +644,25 @@ footer {
 /* Flight Controls */
 .flight-controls {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1.5rem;
     margin-bottom: 1.5rem;
     background: var(--table-header-bg);
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.control-header {
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.control-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
 }
 
 .control-group {
@@ -1031,18 +1043,94 @@ footer {
     gap: 8px;
 }
 .status-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 12px 1fr auto; /* dot | host | pill */
+    column-gap: 10px;
     align-items: center;
-    gap: 10px;
-    padding: 8px;
-    border-radius: 6px;
-    background-color: rgba(255,255,255,0.03);
+    padding: 10px;
+    transition: background-color .2s ease, border-color .2s ease;
 }
-.status-host {
+.status-item + .status-item {
+    border-top: 1px solid var(--glass-border);
+}
+
+/* Keep the dot on the first column, vertical center */
+.status-item .status-dot {
+    grid-column: 1;
+    align-self: center;
+}
+
+/* Host label (both span and button) sits in the middle column */
+.status-item .status-host {
+    grid-column: 2;
+    background: none;
+    border: 0;
+    padding: 0;
     color: var(--text-color);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    font-size: 0.95rem;
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
 }
+.status-item .status-host:hover { text-decoration: underline; }
+
+/* Right-aligned pill in the last column (override auto margin from earlier styles) */
+.scraper-status .status-text {
+    grid-column: 3;
+    margin-left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 0.85rem;
+}
+.scraper-status .status-text::before {
+    content: '•';
+    font-size: 1.1em;
+    line-height: 1;
+    display: inline-block;
+}
+
+/* Expandable info spans full width under the row, indent to line up with host text */
+.status-item .status-info {
+    grid-column: 1 / -1;
+    margin-top: 6px;
+    margin-left: 0;
+    padding: 8px 10px 8px 30px; /* indent under host */
+    border-left: 2px solid var(--glass-border);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Caret indicator on expandable hosts */
+.status-toggle::after {
+    content: '▸';
+    margin-left: 6px;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+}
+.status-toggle[aria-expanded="true"]::after {
+    content: '▾';
+}
+
+/* Row coloring for online/offline */
+.status-item {
+    transition: background-color .2s ease, border-color .2s ease;
+}
+.status-item.online {
+    background: rgba(34,197,94,0.08);
+    border-left: 3px solid rgba(34,197,94,0.55);
+}
+.status-item.offline {
+    background: rgba(239,68,68,0.08);
+    border-left: 3px solid rgba(239,68,68,0.45);
+}
+
+/* Scraper status: ensure dot is visible and colored */
 .status-dot {
     width: 10px;
     height: 10px;
@@ -1051,50 +1139,28 @@ footer {
 }
 .status-dot.online {
     background: #22c55e;
-    box-shadow: 0 0 6px rgba(34,197,94,0.8);
+    box-shadow: 0 0 6px rgba(34,197,94,0.6);
 }
 .status-dot.offline {
     background: #ef4444;
-    box-shadow: 0 0 6px rgba(239,68,68,0.6);
+    box-shadow: 0 0 6px rgba(239,68,68,0.5);
 }
-.status-text {
-    margin-left: auto;
-    font-size: 0.85rem;
+
+/* Status pill base + color variants */
+.scraper-status .status-text {
+    /* keep grid placement and inline-flex from earlier */
     padding: 2px 8px;
     border-radius: 999px;
     border: 1px solid transparent;
+    font-size: 0.85rem;
 }
-.status-text.online {
+.scraper-status .status-text.online {
     color: #22c55e;
     border-color: rgba(34,197,94,0.4);
-    background: rgba(34,197,94,0.08);
+    background: rgba(34,197,94,0.10);
 }
-.status-text.offline {
+.scraper-status .status-text.offline {
     color: #ef4444;
     border-color: rgba(239,68,68,0.4);
-    background: rgba(239,68,68,0.08);
-}
-
-/* Reuse summary styling for history collapsible */
-.flight-selector-container summary,
-.history-collapsible summary {
-    cursor: pointer;
-    padding: 0.75rem;
-    background-color: var(--table-header-bg);
-    border-radius: 4px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-    margin-top: 0.5rem;
-}
-.flight-selector-container summary:hover,
-.history-collapsible summary:hover {
-    background-color: var(--table-row-hover);
-}
-
-/* Version label */
-.version-info {
-    margin-top: 12px;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    opacity: 0.9;
+    background: rgba(239,68,68,0.10);
 }

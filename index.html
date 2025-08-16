@@ -135,25 +135,23 @@
                     <div class="loading-spinner"></div>
                     <p>Loading Map Data...</p>
                 </div>
+                <!-- Geo progress indicator (top-right) -->
+                <div id="geo-progress" class="geo-progress" hidden aria-live="polite" aria-label="Geocoding progress">
+                    <div class="geo-spinner" aria-hidden="true"></div>
+                    <div class="geo-count"><span id="geo-done">0</span>/<span id="geo-total">0</span></div>
+                    <div class="geo-eta" id="geo-eta">ETA —</div>
+                </div>
             </div>
             
             <!-- Historical Flights Section -->
             <div class="history-section">
                 <h2>Historical Flights</h2>
                 <p class="subtitle">Track the President's previous movements</p>
-                
+
                 <!-- Enhanced Customization Controls -->
                 <div class="flight-controls">
-                    <div class="control-group">
-                        <label for="flight-count">Number of flights to show:</label>
-                        <select id="flight-count" class="control-select">
-                            <option value="5">Last 5 flights</option>
-                            <option value="10" selected>Last 10 flights</option>
-                            <option value="20">Last 20 flights</option>
-                            <option value="all">All flights</option>
-                        </select>
-                    </div>
-                    
+                    <div class="control-header"><strong>Showing:</strong> All flights</div>
+
                     <div class="control-group">
                         <label>Display options:</label>
                         <div class="checkbox-group">
@@ -175,8 +173,8 @@
                             </label>
                         </div>
                     </div>
-                    
-                    <div class="control-group">
+
+                    <div class="control-actions">
                         <button id="apply-settings" class="primary-button">Show Historical Flights</button>
                     </div>
                 </div>
@@ -222,7 +220,7 @@
         
         <footer>
             <p>Data updated automatically. This is not an official government website.</p>
-            <p class="small">© <span id="current-year"></span> Where Is Ramaphosa | <a href="sitemap.xml">Sitemap</a></p>
+            <p class="small">© <span id="current-year"></span> Where Is Ramaphosa | <a href="about.html">About</a> | <a href="sitemap.xml">Sitemap</a></p>
             <div class="social-links">
                 <a href="https://veergosai.com" target="_blank" rel="noopener noreferrer" aria-label="Website: veergosai.com">
                     <i class="fa-solid fa-globe icon" aria-hidden="true"></i>
@@ -238,31 +236,45 @@
             <div class="scraper-status" role="status" aria-live="polite" aria-label="Web scraper status">
                 <div class="scraper-status-header">Web scraper status</div>
                 <ul class="scraper-status-list">
-                    <li class="status-item">
+                    <li class="status-item online">
                         <span class="status-dot online" aria-hidden="true"></span>
-                        <span class="status-host">gh01.runner.github.com</span>
+                        <button type="button" class="status-host status-toggle" aria-expanded="false">
+                            gh01.runner.github.com
+                        </button>
                         <span class="status-text online">Online</span>
+                        <div class="status-info" hidden>
+                            <p>This project runs in a GitHub Action on:</p>
+                            <ul>
+                                <li>Ubuntu 24.04.2 LTS</li>
+                                <li>Schedule: every 30 minutes</li>
+                            </ul>
+                        </div>
                     </li>
-                    <li class="status-item">
+                    <li class="status-item offline">
                         <span class="status-dot offline" aria-hidden="true"></span>
-                        <span class="status-host">prod1-ec2.aws.taptic.org</span>
+                        <button type="button" class="status-host status-toggle" aria-expanded="false">
+                            prod1-ec2.aws.taptic.org
+                        </button>
                         <span class="status-text offline">Offline</span>
+                        <div class="status-info" hidden>
+                            <p>The scraper has not been deployed on any Taptic infrastructure as of yet.</p>
+                        </div>
                     </li>
                     <!-- New: CartoCDN tiles (frontend) -->
-                    <li id="status-carto-tiles" class="status-item">
+                    <li id="status-carto-tiles" class="status-item offline">
                         <span class="status-dot offline" aria-hidden="true"></span>
                         <span class="status-host">basemaps.cartocdn.com</span>
                         <span class="status-text offline">Offline</span>
                     </li>
                     <!-- New: OpenStreetMap API (Nominatim) -->
-                    <li id="status-osm-api" class="status-item">
+                    <li id="status-osm-api" class="status-item offline">
                         <span class="status-dot offline" aria-hidden="true"></span>
                         <span class="status-host">nominatim.openstreetmap.org</span>
                         <span class="status-text offline">Offline</span>
                     </li>
                 </ul>
             </div>
-            <div class="version-info">Version 1.0</div>
+            <div class="version-info">Version 3.0</div>
         </footer>
     </div>
 

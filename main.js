@@ -81,6 +81,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the flight selector with empty state
     initializeFlightSelector();
+
+    // Apply when "Number of flights to show" changes
+    const countSelect = document.getElementById('flight-count');
+    if (countSelect) {
+        countSelect.addEventListener('change', () => {
+            applyFlightSettings();
+        });
+    }
 });
 
 // Initialize dark mode based on saved preference or system preference

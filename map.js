@@ -16,19 +16,43 @@ function initializeMap(data) {
     mapInstance = map; // Store map reference for dark mode updates
     
     // Add dark tile layer (CartoDB Dark Matter)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, '
                    + '&copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19
     }).addTo(map);
 
-    // Gentle progress tick when tiles load
-    map.once('load', () => {
-        if (window.progressBar) progressBar.increment(0.05);
-        // Mark CartoCDN tiles frontend online when tiles are loaded
-        if (typeof window.setServiceStatus === 'function') {
-            window.setServiceStatus('status-carto-tiles', true);
+    // Check subdomain health: a|b|c|d.basemaps.cartocdn.com
+    const cartoHealth = { okHosts: new Set(), errHosts: new Set(), bumped: false };
+    function hostFromTileEvent(e) {
+        try {
+            const src = e && e.tile && e.tile.src;
+            if (!src) return null;
+            const u = new URL(src);
+            return u.hostname; // e.g., a.basemaps.cartocdn.com
+        } catch { return null; }
+    }
+    tiles.on('tileload', (e) => {
+        const host = hostFromTileEvent(e);
+        if (host && host.endsWith('.basemaps.cartocdn.com')) {
+            cartoHealth.okHosts.add(host);
+            if (!cartoHealth.bumped && window.progressBar) {
+                cartoHealth.bumped = true;
+                progressBar.increment(0.05);
+            }
+            if (typeof window.setServiceStatus === 'function') {
+                window.setServiceStatus('status-carto-tiles', true);
+            }
+        }
+    });
+    tiles.on('tileerror', (e) => {
+        const host = hostFromTileEvent(e);
+        if (host) cartoHealth.errHosts.add(host);
+        // Only mark offline if we still have no successful loads
+        if (cartoHealth.okHosts.size === 0 && typeof window.setServiceStatus === 'function') {
+            // Keep as offline (default) or explicitly set it
+            window.setServiceStatus('status-carto-tiles', false);
         }
     });
 

@@ -144,14 +144,31 @@ window.setServiceStatus = function setServiceStatus(liId, online) {
     // Reset classes
     dot.classList.remove('online', 'offline');
     text.classList.remove('online', 'offline');
+    row.classList.remove('online', 'offline');
 
     if (online) {
         dot.classList.add('online');
         text.classList.add('online');
+        row.classList.add('online');
         text.textContent = 'Online';
     } else {
         dot.classList.add('offline');
         text.classList.add('offline');
+        row.classList.add('offline');
         text.textContent = 'Offline';
     }
 };
+
+// Expand/collapse status info on host click
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.status-toggle');
+    if (!btn) return;
+    const li = btn.closest('.status-item');
+    if (!li) return;
+    const info = li.querySelector('.status-info');
+    if (!info) return;
+
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    info.hidden = expanded; // hide if was expanded, else show
+});

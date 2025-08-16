@@ -455,10 +455,7 @@ function initializeFlightSelector() {
 function applyFlightSettings() {
     if (window.progressBar) progressBar.start();
     // Get settings from UI
-    const countSelect = document.getElementById('flight-count');
-    const countValue = countSelect.value;
-    
-    flightDisplaySettings.count = countValue === 'all' ? 9999 : parseInt(countValue);
+    flightDisplaySettings.count = 9999;
     flightDisplaySettings.showMarkers = document.getElementById('show-markers').checked;
     flightDisplaySettings.showRoutes = document.getElementById('show-routes').checked;
     flightDisplaySettings.showLabels = document.getElementById('show-labels').checked;
