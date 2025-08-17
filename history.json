@@ -597,5 +597,12 @@
     "destination_time": "10:12PM EAT",
     "destination_date": "Sat 16-Aug-2025",
     "timestamp": "2025-08-16T20:20:52.641Z"
+  },
+  {
+    "departing": "Antananarivo, Madagascar",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-08-17T20:22:09.240Z"
   }
 ]
