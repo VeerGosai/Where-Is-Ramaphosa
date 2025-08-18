@@ -632,5 +632,12 @@
     "destination_time": "10:20AM +08",
     "destination_date": "Tue 19-Aug-2025",
     "timestamp": "2025-08-18T18:31:29.986Z"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Singapore",
+    "destination_time": "11:06AM +08",
+    "destination_date": "Tue 19-Aug-2025",
+    "timestamp": "2025-08-18T22:17:16.384Z"
   }
 ]
