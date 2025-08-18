@@ -604,5 +604,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-08-17T20:22:09.240Z"
+  },
+  {
+    "departing": "Antananarivo, Madagascar",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "01:05AM SAST",
+    "destination_date": "Mon 18-Aug-2025",
+    "timestamp": "2025-08-18T01:52:10.220Z"
   }
 ]
