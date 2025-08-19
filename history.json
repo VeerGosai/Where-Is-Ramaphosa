@@ -660,5 +660,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-08-19T06:31:23.973Z"
+  },
+  {
+    "departing": "Singapore",
+    "destination": "Ota, Japan",
+    "destination_time": "09:29PM JST",
+    "destination_date": "Tue 19-Aug-2025",
+    "timestamp": "2025-08-19T12:41:26.660Z"
   }
 ]
