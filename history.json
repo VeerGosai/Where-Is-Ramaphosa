@@ -653,5 +653,12 @@
     "destination_time": "11:11AM +08",
     "destination_date": "Tue 19-Aug-2025",
     "timestamp": "2025-08-19T04:23:53.370Z"
+  },
+  {
+    "departing": "Singapore",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-08-19T06:31:23.973Z"
   }
 ]
