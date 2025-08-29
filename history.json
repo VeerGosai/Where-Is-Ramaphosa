@@ -723,5 +723,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-08-29T16:24:30.579Z"
+  },
+  {
+    "departing": "Harare, Zimbabwe",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "06:47PM SAST",
+    "destination_date": "Fri 29-Aug-2025",
+    "timestamp": "2025-08-29T18:26:09.723Z"
   }
 ]
