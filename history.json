@@ -814,5 +814,12 @@
     "destination_time": "12:26AM EDT",
     "destination_date": "Mon 22-Sep-2025",
     "timestamp": "2025-09-22T06:31:23.205Z"
+  },
+  {
+    "departing": "New Windsor, NY",
+    "destination": "New York, NY",
+    "destination_time": "10:14AM EDT",
+    "destination_date": "Thu 25-Sep-2025",
+    "timestamp": "2025-09-24T22:18:15.481Z"
   }
 ]
