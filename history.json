@@ -842,5 +842,12 @@
     "destination_time": "01:26PM EDT",
     "destination_date": "Thu 25-Sep-2025",
     "timestamp": "2025-09-25T18:29:10.530Z"
+  },
+  {
+    "departing": "New York, NY",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-09-25T22:16:33.353Z"
   }
 ]
