@@ -891,5 +891,12 @@
     "destination_time": "09:58PM CEST",
     "destination_date": "Wed 08-Oct-2025",
     "timestamp": "2025-10-08T20:21:25.934Z"
+  },
+  {
+    "departing": "Brussels, Belgium",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-10-09T20:22:19.963Z"
   }
 ]
