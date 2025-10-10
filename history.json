@@ -898,5 +898,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-10-09T20:22:19.963Z"
+  },
+  {
+    "departing": "Brussels, Belgium",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "08:02AM SAST",
+    "destination_date": "Fri 10-Oct-2025",
+    "timestamp": "2025-10-10T06:30:18.086Z"
   }
 ]
