@@ -940,5 +940,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-10-12T14:15:54.289Z"
+  },
+  {
+    "departing": "Durban, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:02PM SAST",
+    "destination_date": "Sun 12-Oct-2025",
+    "timestamp": "2025-10-12T16:21:25.317Z"
   }
 ]
