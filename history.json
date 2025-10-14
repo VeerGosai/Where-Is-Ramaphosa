@@ -968,5 +968,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-10-14T20:21:35.912Z"
+  },
+  {
+    "departing": "Cape Town, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "10:33PM SAST",
+    "destination_date": "Tue 14-Oct-2025",
+    "timestamp": "2025-10-14T22:19:04.668Z"
   }
 ]
