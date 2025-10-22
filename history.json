@@ -1024,5 +1024,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-10-21T12:43:07.784Z"
+  },
+  {
+    "departing": "Cape Town, South Africa",
+    "destination": "Jakarta, Indonesia",
+    "destination_time": "07:41AM WIB",
+    "destination_date": "Wed 22-Oct-2025",
+    "timestamp": "2025-10-22T01:40:40.787Z"
   }
 ]
