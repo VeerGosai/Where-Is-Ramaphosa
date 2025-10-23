@@ -1031,5 +1031,12 @@
     "destination_time": "07:41AM WIB",
     "destination_date": "Wed 22-Oct-2025",
     "timestamp": "2025-10-22T01:40:40.787Z"
+  },
+  {
+    "departing": "Jakarta, Indonesia",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-10-23T04:24:06.976Z"
   }
 ]
