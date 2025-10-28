@@ -1059,5 +1059,12 @@
     "destination_time": "12:53AM +04",
     "destination_date": "Tue 28-Oct-2025",
     "timestamp": "2025-10-27T22:18:43.537Z"
+  },
+  {
+    "departing": "Dubai, United Arab Emirates",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-10-28T01:28:32.963Z"
   }
 ]
