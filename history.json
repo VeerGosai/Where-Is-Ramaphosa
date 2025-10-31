@@ -1080,5 +1080,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-10-30T16:26:50.275Z"
+  },
+  {
+    "departing": "Zurich, Switzerland",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "04:38AM SAST",
+    "destination_date": "Fri 31-Oct-2025",
+    "timestamp": "2025-10-31T03:11:13.546Z"
   }
 ]
