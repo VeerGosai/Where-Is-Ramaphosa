@@ -1108,5 +1108,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-11-11T08:28:19.396Z"
+  },
+  {
+    "departing": "Johannesburg, South Africa",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-11-11T10:23:30.826Z"
   }
 ]
