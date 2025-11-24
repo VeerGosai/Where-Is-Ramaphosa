@@ -1157,5 +1157,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-11-24T20:07:28.248Z"
+  },
+  {
+    "departing": "Luanda, Angola",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "11:11PM SAST",
+    "destination_date": "Mon 24-Nov-2025",
+    "timestamp": "2025-11-24T22:06:05.542Z"
   }
 ]
