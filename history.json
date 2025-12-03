@@ -1178,5 +1178,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2025-12-03T20:07:17.941Z"
+  },
+  {
+    "departing": "Vilankulo, Mozambique",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "09:58PM SAST",
+    "destination_date": "Wed 03-Dec-2025",
+    "timestamp": "2025-12-03T22:07:09.936Z"
   }
 ]
