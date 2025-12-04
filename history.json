@@ -1192,5 +1192,12 @@
     "destination_time": "02:03PM SAST",
     "destination_date": "Thu 04-Dec-2025",
     "timestamp": "2025-12-04T12:10:49.946Z"
+  },
+  {
+    "departing": "Bloemfontein, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:39PM SAST",
+    "destination_date": "Thu 04-Dec-2025",
+    "timestamp": "2025-12-04T16:07:55.683Z"
   }
 ]
