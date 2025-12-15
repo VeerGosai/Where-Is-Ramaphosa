@@ -1227,5 +1227,12 @@
     "destination_time": "09:58AM SAST",
     "destination_date": "Wed 10-Dec-2025",
     "timestamp": "2025-12-10T08:08:35.669Z"
+  },
+  {
+    "departing": "Polokwane, South Africa",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2025-12-15T18:09:11.944Z"
   }
 ]
