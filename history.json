@@ -1241,5 +1241,12 @@
     "destination_time": "08:34PM SAST",
     "destination_date": "Mon 15-Dec-2025",
     "timestamp": "2025-12-15T22:07:07.855Z"
+  },
+  {
+    "departing": "Newcastle, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:15PM SAST",
+    "destination_date": "Tue 16-Dec-2025",
+    "timestamp": "2025-12-16T16:07:59.684Z"
   }
 ]
