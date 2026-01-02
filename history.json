@@ -1248,5 +1248,12 @@
     "destination_time": "05:15PM SAST",
     "destination_date": "Tue 16-Dec-2025",
     "timestamp": "2025-12-16T16:07:59.684Z"
+  },
+  {
+    "departing": "Ladysmith, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:15PM SAST",
+    "destination_date": "Tue 16-Dec-2025",
+    "timestamp": "2026-01-02T08:08:41.854Z"
   }
 ]
