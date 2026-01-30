@@ -1269,5 +1269,12 @@
     "destination_time": "06:45PM SAST",
     "destination_date": "Mon 19-Jan-2026",
     "timestamp": "2026-01-19T22:06:34.760Z"
+  },
+  {
+    "departing": "Boschkop, Gauteng, ZA",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2026-01-30T08:13:58.960Z"
   }
 ]
