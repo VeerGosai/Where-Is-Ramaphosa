@@ -1283,5 +1283,12 @@
     "destination_time": "04:08PM SAST",
     "destination_date": "Mon 09-Feb-2026",
     "timestamp": "2026-02-09T14:26:47.172Z"
+  },
+  {
+    "departing": "Port Elizabeth, South Africa",
+    "destination": "Cape Town, South Africa",
+    "destination_time": "07:27PM SAST",
+    "destination_date": "Mon 09-Feb-2026",
+    "timestamp": "2026-02-09T18:22:20.273Z"
   }
 ]
