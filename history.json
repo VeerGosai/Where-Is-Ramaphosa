@@ -1409,5 +1409,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-03-03T08:15:36.148Z"
+  },
+  {
+    "departing": "Durban, South Africa",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2026-03-03T20:11:07.014Z"
   }
 ]
