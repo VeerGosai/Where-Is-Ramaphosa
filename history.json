@@ -1472,5 +1472,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-03-20T08:16:07.926Z"
+  },
+  {
+    "departing": "Pietermaritzburg, South Africa",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2026-03-20T14:20:14.760Z"
   }
 ]
