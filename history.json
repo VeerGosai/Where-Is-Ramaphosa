@@ -1486,5 +1486,12 @@
     "destination_time": "04:43PM SAST",
     "destination_date": "Fri 20-Mar-2026",
     "timestamp": "2026-03-20T16:17:26.335Z"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Kimberley, South Africa",
+    "destination_time": "09:17AM SAST",
+    "destination_date": "Sat 21-Mar-2026",
+    "timestamp": "2026-03-21T08:10:32.268Z"
   }
 ]
