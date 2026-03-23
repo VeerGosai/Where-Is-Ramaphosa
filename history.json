@@ -1514,5 +1514,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-03-23T14:28:23.378Z"
+  },
+  {
+    "departing": "Springbok, South Africa",
+    "destination": "Cape Town, South Africa",
+    "destination_time": "04:33PM SAST",
+    "destination_date": "Mon 23-Mar-2026",
+    "timestamp": "2026-03-23T18:21:41.736Z"
   }
 ]
