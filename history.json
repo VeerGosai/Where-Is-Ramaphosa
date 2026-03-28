@@ -1556,5 +1556,12 @@
     "destination_time": "12:07PM SAST",
     "destination_date": "Sat 28-Mar-2026",
     "timestamp": "2026-03-28T10:12:15.734Z"
+  },
+  {
+    "departing": "Nelspruit, South Africa",
+    "destination": "Durban, South Africa",
+    "destination_time": "05:11PM SAST",
+    "destination_date": "Sat 28-Mar-2026",
+    "timestamp": "2026-03-28T16:10:58.946Z"
   }
 ]
