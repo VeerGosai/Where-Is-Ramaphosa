@@ -1591,5 +1591,12 @@
     "destination_time": "11:27AM SAST",
     "destination_date": "Sun 05-Apr-2026",
     "timestamp": "2026-04-05T10:13:09.686Z"
+  },
+  {
+    "departing": "Polokwane, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "07:04PM SAST",
+    "destination_date": "Sun 05-Apr-2026",
+    "timestamp": "2026-04-05T18:14:07.265Z"
   }
 ]
