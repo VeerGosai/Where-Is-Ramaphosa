@@ -1633,5 +1633,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-04-22T16:27:40.725Z"
+  },
+  {
+    "departing": "Maseru, Lesotho",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "06:31PM SAST",
+    "destination_date": "Wed 22-Apr-2026",
+    "timestamp": "2026-04-22T18:28:16.456Z"
   }
 ]
