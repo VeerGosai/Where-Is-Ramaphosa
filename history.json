@@ -1640,5 +1640,12 @@
     "destination_time": "06:31PM SAST",
     "destination_date": "Wed 22-Apr-2026",
     "timestamp": "2026-04-22T18:28:16.456Z"
+  },
+  {
+    "departing": "Manzini, Swaziland",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "07:40PM SAST",
+    "destination_date": "Sat 25-Apr-2026",
+    "timestamp": "2026-04-25T18:18:09.265Z"
   }
 ]
