@@ -1661,5 +1661,12 @@
     "destination_time": "02:19PM SAST",
     "destination_date": "Mon 27-Apr-2026",
     "timestamp": "2026-04-27T12:39:00.647Z"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2026-05-03T08:38:30.168Z"
   }
 ]
