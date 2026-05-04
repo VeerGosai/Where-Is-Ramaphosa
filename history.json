@@ -1689,5 +1689,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-05-04T16:38:02.825Z"
+  },
+  {
+    "departing": "Port Elizabeth, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "07:57PM SAST",
+    "destination_date": "Mon 04-May-2026",
+    "timestamp": "2026-05-04T18:38:08.585Z"
   }
 ]
