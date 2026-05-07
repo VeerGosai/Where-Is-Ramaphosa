@@ -1724,5 +1724,12 @@
     "destination_time": "12:26PM SAST",
     "destination_date": "Thu 07-May-2026",
     "timestamp": "2026-05-07T10:47:20.140Z"
+  },
+  {
+    "departing": "Richards Bay, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "10:11PM SAST",
+    "destination_date": "Thu 07-May-2026",
+    "timestamp": "2026-05-07T20:31:14.670Z"
   }
 ]
