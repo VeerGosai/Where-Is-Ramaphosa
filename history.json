@@ -1773,5 +1773,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-05-21T16:57:05.309Z"
+  },
+  {
+    "departing": "Gaborone, Botswana",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "07:06PM SAST",
+    "destination_date": "Thu 21-May-2026",
+    "timestamp": "2026-05-21T18:42:40.618Z"
   }
 ]
