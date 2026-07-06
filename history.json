@@ -1899,5 +1899,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-07-06T17:03:52.483Z"
+  },
+  {
+    "departing": "East London, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "07:16PM SAST",
+    "destination_date": "Mon 06-Jul-2026",
+    "timestamp": "2026-07-06T18:41:36.099Z"
   }
 ]
