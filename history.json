@@ -1941,5 +1941,12 @@
     "destination_time": "09:13AM SAST",
     "destination_date": "Fri 14-Aug-2026",
     "timestamp": "2026-08-14T08:30:39.072Z"
+  },
+  {
+    "departing": "Durban, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "05:15PM SAST",
+    "destination_date": "Fri 14-Aug-2026",
+    "timestamp": "2026-08-14T16:18:35.810Z"
   }
 ]
