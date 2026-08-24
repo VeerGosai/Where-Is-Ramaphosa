@@ -1976,5 +1976,12 @@
     "destination_time": "01:56PM SAST",
     "destination_date": "Thu 20-Aug-2026",
     "timestamp": "2026-08-20T12:50:24.997Z"
+  },
+  {
+    "departing": "Pretoria, South Africa",
+    "destination": "Pretoria, South Africa",
+    "destination_time": "01:56PM SAST",
+    "destination_date": "Thu 20-Aug-2026",
+    "timestamp": "2026-08-24T16:37:43.421Z"
   }
 ]
