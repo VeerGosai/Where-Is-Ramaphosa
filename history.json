@@ -2004,5 +2004,12 @@
     "destination_time": "07:17PM SAST",
     "destination_date": "Tue 25-Aug-2026",
     "timestamp": "2026-08-25T18:39:23.176Z"
+  },
+  {
+    "departing": "Cape Town, South Africa",
+    "destination": "Johannesburg, South Africa",
+    "destination_time": "10:19AM SAST",
+    "destination_date": "Thu 27-Aug-2026",
+    "timestamp": "2026-08-27T11:27:28.578Z"
   }
 ]
