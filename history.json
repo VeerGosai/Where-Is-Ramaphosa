@@ -2018,5 +2018,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-08-31T14:15:08.018Z"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Port Elizabeth, South Africa",
+    "destination_time": "04:56PM SAST",
+    "destination_date": "Mon 31-Aug-2026",
+    "timestamp": "2026-08-31T16:13:58.305Z"
   }
 ]
