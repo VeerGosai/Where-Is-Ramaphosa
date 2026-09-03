@@ -2053,5 +2053,12 @@
     "destination_time": "02:49PM SAST",
     "destination_date": "Thu 03-Sep-2026",
     "timestamp": "2026-09-03T14:14:14.727Z"
+  },
+  {
+    "departing": "Nelspruit, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "07:16PM SAST",
+    "destination_date": "Thu 03-Sep-2026",
+    "timestamp": "2026-09-03T18:16:31.943Z"
   }
 ]
