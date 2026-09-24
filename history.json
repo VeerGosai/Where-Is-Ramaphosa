@@ -2074,5 +2074,12 @@
     "destination_time": "10:32AM SAST",
     "destination_date": "Thu 24-Sep-2026",
     "timestamp": "2026-09-24T10:13:48.629Z"
+  },
+  {
+    "departing": "Oudtshoorn, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "03:59PM SAST",
+    "destination_date": "Thu 24-Sep-2026",
+    "timestamp": "2026-09-24T14:14:34.280Z"
   }
 ]
