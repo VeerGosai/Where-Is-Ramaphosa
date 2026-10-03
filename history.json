@@ -2109,5 +2109,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-10-03T08:17:08.803Z"
+  },
+  {
+    "departing": "Tshwane, South Africa",
+    "destination": "Addis Ababa, Ethiopia",
+    "destination_time": "03:12PM EAT",
+    "destination_date": "Sat 03-Oct-2026",
+    "timestamp": "2026-10-03T13:45:48.194Z"
   }
 ]
