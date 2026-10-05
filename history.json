@@ -2130,5 +2130,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-10-05T18:18:13.806Z"
+  },
+  {
+    "departing": "Marsabit, Kenya",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "11:05PM SAST",
+    "destination_date": "Mon 05-Oct-2026",
+    "timestamp": "2026-10-05T22:13:17.645Z"
   }
 ]
