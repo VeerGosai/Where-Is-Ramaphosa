@@ -2172,5 +2172,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-10-10T14:12:57.167Z"
+  },
+  {
+    "departing": "Bloemfontein, South Africa",
+    "destination": "Tshwane, South Africa",
+    "destination_time": "04:47PM SAST",
+    "destination_date": "Sat 10-Oct-2026",
+    "timestamp": "2026-10-10T16:14:04.502Z"
   }
 ]
