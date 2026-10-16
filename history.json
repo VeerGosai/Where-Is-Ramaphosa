@@ -2228,5 +2228,12 @@
     "destination_time": "10:25AM SAST",
     "destination_date": "Fri 16-Oct-2026",
     "timestamp": "2026-10-16T10:12:56.096Z"
+  },
+  {
+    "departing": "Aggeneys, South Africa",
+    "destination": "Ysterplaat, South Africa",
+    "destination_time": "03:55PM SAST",
+    "destination_date": "Fri 16-Oct-2026",
+    "timestamp": "2026-10-16T14:13:39.799Z"
   }
 ]
