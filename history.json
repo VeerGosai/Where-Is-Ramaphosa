@@ -2221,5 +2221,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-10-16T08:17:10.168Z"
+  },
+  {
+    "departing": "Pretoria, South Africa",
+    "destination": "Aggeneys, South Africa",
+    "destination_time": "10:25AM SAST",
+    "destination_date": "Fri 16-Oct-2026",
+    "timestamp": "2026-10-16T10:12:56.096Z"
   }
 ]
