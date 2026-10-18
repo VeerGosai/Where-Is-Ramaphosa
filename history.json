@@ -2235,5 +2235,12 @@
     "destination_time": "03:55PM SAST",
     "destination_date": "Fri 16-Oct-2026",
     "timestamp": "2026-10-16T14:13:39.799Z"
+  },
+  {
+    "departing": "Ysterplaat, South Africa",
+    "destination": "— —",
+    "destination_time": "",
+    "destination_date": "",
+    "timestamp": "2026-10-18T18:13:35.542Z"
   }
 ]
