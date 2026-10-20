@@ -2256,5 +2256,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-10-20T20:13:11.021Z"
+  },
+  {
+    "departing": "Pretoria, South Africa",
+    "destination": "Cape Town, South Africa",
+    "destination_time": "10:51PM SAST",
+    "destination_date": "Tue 20-Oct-2026",
+    "timestamp": "2026-10-20T22:11:53.161Z"
   }
 ]
