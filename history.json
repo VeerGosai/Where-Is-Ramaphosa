@@ -2298,5 +2298,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-10-24T08:15:24.883Z"
+  },
+  {
+    "departing": "Pretoria, South Africa",
+    "destination": "Bloemfontein, South Africa",
+    "destination_time": "10:47AM SAST",
+    "destination_date": "Sat 24-Oct-2026",
+    "timestamp": "2026-10-24T10:11:22.313Z"
   }
 ]
