@@ -2319,5 +2319,12 @@
     "destination_time": "09:57AM SAST",
     "destination_date": "Wed 28-Oct-2026",
     "timestamp": "2026-10-28T08:13:25.808Z"
+  },
+  {
+    "departing": "Durban, South Africa",
+    "destination": "Pretoria, South Africa",
+    "destination_time": "07:20PM SAST",
+    "destination_date": "Thu 29-Oct-2026",
+    "timestamp": "2026-10-29T18:12:17.401Z"
   }
 ]
