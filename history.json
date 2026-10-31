@@ -2340,5 +2340,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-10-31T14:06:54.973Z"
+  },
+  {
+    "departing": "Polokwane, South Africa",
+    "destination": "Pretoria, South Africa",
+    "destination_time": "04:30PM SAST",
+    "destination_date": "Sat 31-Oct-2026",
+    "timestamp": "2026-10-31T16:07:37.575Z"
   }
 ]
