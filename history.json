@@ -2368,5 +2368,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-11-01T14:07:04.123Z"
+  },
+  {
+    "departing": "East London, South Africa",
+    "destination": "Pretoria, South Africa",
+    "destination_time": "04:07PM SAST",
+    "destination_date": "Sun 01-Nov-2026",
+    "timestamp": "2026-11-01T16:07:41.260Z"
   }
 ]
