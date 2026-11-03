@@ -1,304 +1,90 @@
-// Global variables for map control
 let map;
-let historicalFlightMarkers = [];
-let historicalFlightPaths = [];
-let showingHistoricalFlights = false;
+let latestBounds = null;
+let displayedBounds = null;
+let currentFlightLayer;
+let latestDeparture;
+let latestPath;
+let historyLayer;
+let currentMapMessage = '';
 
-// Coordinates cache to avoid unnecessary API calls
-let coordinatesCache = {};
+function setMapMessage(message) {
+    currentMapMessage = message;
+    const el = document.getElementById('map-message');
+    el.textContent = message;
+    el.hidden = !message;
+}
 
-// Variables to store current view for recentering
-let currentFlightBounds = null;
-
-function initializeMap(data) {
-    // Create a map centered on South Africa
-    map = L.map('map').setView([-30.5595, 22.9375], 5);
-    mapInstance = map; // Store map reference for dark mode updates
-    
-    // Add dark tile layer (CartoDB Dark Matter)
-    const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, '
-                   + '&copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-    }).addTo(map);
-
-    // Check subdomain health: a|b|c|d.basemaps.cartocdn.com
-    const cartoHealth = { okHosts: new Set(), errHosts: new Set(), bumped: false };
-    function hostFromTileEvent(e) {
-        try {
-            const src = e && e.tile && e.tile.src;
-            if (!src) return null;
-            const u = new URL(src);
-            return u.hostname; // e.g., a.basemaps.cartocdn.com
-        } catch { return null; }
+async function initializeMap(data) {
+    if (typeof L === 'undefined') {
+        setMapMessage('The map library could not load. Flight records are still available below.');
+        return;
     }
-    tiles.on('tileload', (e) => {
-        const host = hostFromTileEvent(e);
-        if (host && host.endsWith('.basemaps.cartocdn.com')) {
-            cartoHealth.okHosts.add(host);
-            if (!cartoHealth.bumped && window.progressBar) {
-                cartoHealth.bumped = true;
-                progressBar.increment(0.05);
-            }
-            if (typeof window.setServiceStatus === 'function') {
-                window.setServiceStatus('status-carto-tiles', true);
-            }
-        }
+    const { config } = await locationStore.load();
+    map = L.map('map', { scrollWheelZoom: false }).setView([-28.5, 25], 5);
+    const tiles = L.tileLayer(config.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: config.attribution || '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: config.maxZoom || 19
     });
-    tiles.on('tileerror', (e) => {
-        const host = hostFromTileEvent(e);
-        if (host) cartoHealth.errHosts.add(host);
-        // Only mark offline if we still have no successful loads
-        if (cartoHealth.okHosts.size === 0 && typeof window.setServiceStatus === 'function') {
-            // Keep as offline (default) or explicitly set it
-            window.setServiceStatus('status-carto-tiles', false);
-        }
+    const tileError = 'Map tiles are unavailable. Flight records and route overlays remain accessible.';
+    tiles.on('tileerror', () => setMapMessage(tileError));
+    tiles.on('load', () => {
+        // A finished batch can contain errors, so only clear when every visible tile loaded.
+        const failed = document.querySelector('#map .leaflet-tile:not(.leaflet-tile-loaded)');
+        if (!failed && currentMapMessage === tileError) setMapMessage('');
     });
+    tiles.addTo(map);
+    currentFlightLayer = L.layerGroup().addTo(map);
+    historyLayer = L.layerGroup().addTo(map);
+    document.getElementById('recenter-map').addEventListener('click', recenterMap);
+    document.getElementById('reset-map').addEventListener('click', () => {
+        displayedBounds = null;
+        map.setView([-28.5, 25], 5);
+    });
+    const resizeObserver = new ResizeObserver(() => {
+        map.invalidateSize({ pan: false });
+        if (displayedBounds?.length) fitRoutes(displayedBounds);
+    });
+    resizeObserver.observe(document.getElementById('map'));
+    if (data) await plotCurrentFlight(data);
+}
 
-    // Add CSS for the map markers
-    addMapStyles();
-    
-    // Set up recenter button click handler
-    document.getElementById('recenter-map').addEventListener('click', function() {
-        recenterMap();
-    });
-    
-    // Plot current flight and zoom to it (returns a Promise)
-    const plotted = plotCurrentFlight(data);
-    
-    // Prefetch historical flight data so it's ready when needed
-    fetchHistoricalFlightLocations();
-    return plotted; // allow caller to await
+function makePoint(coords, name, destination, layer = currentFlightLayer) {
+    const icon = L.divIcon({ className: 'map-marker', html: `<div class="map-point ${destination ? 'destination' : 'departure'}"></div>`, iconSize: [14, 14], iconAnchor: [7, 7] });
+    return L.marker(coords, { icon }).bindPopup(escapeHTML(name)).addTo(layer);
+}
+
+async function plotCurrentFlight(data) {
+    showMapLoading(true);
+    try {
+        const [from, to] = await Promise.all([geocodeName(data.departing), geocodeName(data.destination)]);
+        if (from) latestDeparture = makePoint(from, data.departing, false);
+        if (to) makePoint(to, data.destination, true);
+        latestBounds = [from, to].filter(Boolean);
+        if (from && to) latestPath = L.polyline([from, to], { color: '#e10600', weight: 2.5, dashArray: '7 7', opacity: .9 }).addTo(currentFlightLayer);
+        if (latestBounds.length) recenterMap();
+        if (!from || (!to && !isInTransit(data.destination))) setMapMessage('Some locations could not be resolved. Available locations are shown.');
+        document.getElementById('map-summary').textContent = isInTransit(data.destination)
+            ? 'In transit · destination not yet reported' : 'Latest reported journey · LMG1';
+    } finally { showMapLoading(false); }
 }
 
 function recenterMap() {
-    // If we have current flight bounds, use them
-    if (currentFlightBounds) {
-        map.fitBounds(currentFlightBounds, { padding: [50, 50] });
-    } 
-    // Otherwise if we have departure and destination markers
-    else if (map.departureCoords && map.destinationCoords) {
-        map.fitBounds([
-            map.departureCoords,
-            map.destinationCoords
-        ], { padding: [50, 50] });
-    }
-    // Otherwise center on South Africa
-    else {
-        map.setView([-30.5595, 22.9375], 5);
-    }
-    
-    // Add a subtle bounce animation to the map
-    const mapElement = document.getElementById('map');
-    mapElement.classList.add('map-bounce');
-    
-    // Remove the animation class after it completes
-    setTimeout(() => {
-        mapElement.classList.remove('map-bounce');
-    }, 600);
+    if (!map) return;
+    if (latestBounds?.length) fitRoutes(latestBounds);
+    else map.setView([-28.5, 25], 5);
 }
 
-function plotCurrentFlight(data) {
-    // Skip if no data or in transit
-    if (!data || isInTransit(data.destination)) {
-        console.log('No current flight to plot or flight is in transit');
-        return Promise.resolve();
-    }
-
-    showMapLoading();
-    if (window.progressBar) progressBar.increment(0.05);
-
-    // Geocode both in parallel
-    return Promise.all([
-        geocodeName(data.departing),
-        geocodeName(data.destination)
-    ]).then(([fromCoords, toCoords]) => {
-        // Update OSM API status based on first-flight geocode success
-        if (typeof window.setServiceStatus === 'function') {
-            const ok = !!(fromCoords || toCoords);
-            window.setServiceStatus('status-osm-api', ok);
-        }
-
-        if (fromCoords) createMarkerAndLine(fromCoords, false);
-        if (toCoords) createMarkerAndLine(toCoords, true);
-
-        if (fromCoords && toCoords) {
-            currentFlightBounds = [fromCoords, toCoords];
-            map.fitBounds(currentFlightBounds, { padding: [50, 50] });
-        }
-    }).finally(() => {
-        hideMapLoading();
-    });
+function fitRoutes(bounds) {
+    displayedBounds = bounds;
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 9, animate: false });
 }
 
-// Promise-based geocoder with cache
-function geocodeName(locationName) {
-    if (isInTransit(locationName)) return Promise.resolve(null);
-    if (coordinatesCache[locationName]) return Promise.resolve(coordinatesCache[locationName]);
-
-    const encoded = encodeURIComponent(locationName);
-    return fetch(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1`)
-        .then(r => r.json())
-        .then(data => {
-            if (data && data.length > 0) {
-                const coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-                coordinatesCache[locationName] = coords;
-                return coords;
-            }
-            return null;
-        })
-        .catch(() => null);
-}
-
-function createMarkerAndLine(coords, isDestination) {
-    // Create marker with custom icon
-    const markerIcon = L.divIcon({
-        className: isDestination ? 'destination-marker' : 'departure-marker',
-        html: `<div class="marker-pin ${isDestination ? 'destination' : 'departure'}"></div>`,
-        iconSize: [30, 30],
-        iconAnchor: [15, 30]
-    });
-    
-    // Store marker reference for later visibility control
-    const marker = L.marker(coords, { icon: markerIcon }).addTo(map);
-    
-    // Store reference to marker
-    if (!isDestination) {
-        map.departureMarker = marker;
-        map.departureCoords = coords;
-    } else {
-        map.destinationMarker = marker;
-        map.destinationCoords = coords;
-    }
-    
-    // Add flight path if we have both departure and destination
-    if (map.departureCoords && isDestination) {
-        drawFlightPath(map.departureCoords, coords);
-    }
-}
-
-function drawFlightPath(fromCoords, toCoords) {
-    // Draw dashed line between points
-    const polyline = L.polyline([fromCoords, toCoords], {
-        color: '#007bff',
-        weight: 3,
-        opacity: 0.7,
-        dashArray: '10, 10'
-    }).addTo(map);
-    
-    map.currentPolyline = polyline;
-    
-    // Add animated line for visual effect
-    const animatedPolyline = L.polyline([[fromCoords[0], fromCoords[1]]], {
-        color: '#ff4757',
-        weight: 4
-    }).addTo(map);
-    
-    map.currentAnimatedPolyline = animatedPolyline;
-    
-    // Add the endpoints to complete the animation
-    animatedPolyline.addLatLng(fromCoords);
-    animatedPolyline.addLatLng(toCoords);
-}
-
-function addMapStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .marker-pin {
-            width: 30px;
-            height: 30px;
-            border-radius: 50% 50% 50% 0;
-            background: #c30b82;
-            transform: rotate(-45deg);
-            position: relative;
-        }
-        .marker-pin.departure {
-            background: #4caf50;
-        }
-        .marker-pin.destination {
-            background: #007bff;
-        }
-        .marker-pin:after {
-            content: '';
-            width: 14px;
-            height: 14px;
-            background: #fff;
-            position: absolute;
-            border-radius: 50%;
-            top: 8px;
-            left: 8px;
-        }
-        .flight-marker div {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: white;
-            border: 3px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        .map-bounce {
-            animation: map-bounce 0.6s ease;
-        }
-        @keyframes map-bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// Check if a location name indicates in-transit status
-function isInTransit(locationName) {
-    return !locationName || 
-        locationName === "— —" || 
-        locationName === "-- --" ||
-        (locationName && locationName.includes("—")) ||
-        locationName.trim() === "";
-}
-
-// Update current departure visibility based on settings
 function updateCurrentDepartureVisibility() {
-    // Find the current departure marker and update its visibility
-    if (map && map.departureMarker) {
-        if (flightDisplaySettings.showCurrentDeparture) {
-            map.addLayer(map.departureMarker);
-        } else {
-            map.removeLayer(map.departureMarker);
-        }
-    }
-    
-    // Also update any polylines that might be showing the current route
-    if (map && map.currentPolyline) {
-        if (flightDisplaySettings.showCurrentDeparture) {
-            map.addLayer(map.currentPolyline);
-        } else {
-            map.removeLayer(map.currentPolyline);
-        }
-    }
-    
-    if (map && map.currentAnimatedPolyline) {
-        if (flightDisplaySettings.showCurrentDeparture) {
-            map.addLayer(map.currentAnimatedPolyline);
-        } else {
-            map.removeLayer(map.currentAnimatedPolyline);
-        }
+    if (!map || !currentFlightLayer) return;
+    for (const layer of [latestDeparture, latestPath].filter(Boolean)) {
+        if (flightDisplaySettings.showCurrentDeparture) currentFlightLayer.addLayer(layer);
+        else currentFlightLayer.removeLayer(layer);
     }
 }
 
-// Show map-specific loading indicator
-function showMapLoading() {
-    document.getElementById('map-loading-overlay').classList.add('active');
-}
-
-// Hide map-specific loading indicator
-function hideMapLoading() {
-    document.getElementById('map-loading-overlay').classList.remove('active');
-}
+function showMapLoading(active) { document.getElementById('map-loading-overlay').hidden = !active; }

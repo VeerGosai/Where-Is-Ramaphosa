@@ -1,291 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Where is Ramaphosa status</title>
-    
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Track President Cyril Ramaphosa's official movements by following SAAF Squadron 21 flights. Real-time updates on presidential travel across South Africa and internationally.">
-    <meta name="keywords" content="Ramaphosa, President of South Africa, presidential flights, SAAF Squadron 21, LMG1, ZS-RSA, presidential travel, South African government, flight tracker">
-    <meta name="author" content="Where Is Ramaphosa">
-    
-    <!-- Open Graph / Social Media Preview Tags -->
-    <meta property="og:title" content="Where Is Ramaphosa? | Presidential Flight Tracker">
-    <meta property="og:description" content="Follow President Cyril Ramaphosa's official movements through SAAF Squadron 21 flight tracking. Stay updated on presidential travel.">
-    <meta property="og:image" content="https://veergosai.github.io/Where-Is-Ramaphosa/social-preview.png">
-    <meta property="og:url" content="https://veergosai.github.io/Where-Is-Ramaphosa/">
-    <meta property="og:type" content="website">
-    
-    <!-- Twitter Card Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Where Is Ramaphosa? | Presidential Flight Tracker">
-    <meta name="twitter:description" content="Track the South African President's official flights and locations in real-time.">
-    <meta name="twitter:image" content="https://veergosai.github.io/Where-Is-Ramaphosa/social-preview.png">
-    
-    <!-- Favicon -->
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin=""/>
-    <!-- Replace Roboto with Poppins and add preconnects -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://veergosai.github.io/Where-Is-Ramaphosa/">
-    
-    <!-- Structured Data for SEO -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Where Is Ramaphosa?",
-      "url": "https://veergosai.github.io/Where-Is-Ramaphosa/",
-      "description": "Track President Cyril Ramaphosa's official movements by following SAAF Squadron 21 flights.",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://veergosai.github.io/Where-Is-Ramaphosa/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-    
-    <!-- Color Scheme Meta Tags -->
-    <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f9fa">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121212">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore reported presidential aircraft movements, recent journeys, and flight history across South Africa and beyond.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#ffffff">
+  <title>Where Is Ramaphosa? — Flight Observatory</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://veergosai.github.io/Where-Is-Ramaphosa/">
+  <script src="theme.js"></script>
+  <script src="dropdowns.js" defer></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Global top progress bar -->
-    <div id="top-progress" class="top-progress" aria-hidden="true"><div class="bar"></div></div>
-    
-    <div id="loading-overlay" class="loading-overlay">
-        <div class="loading-spinner"></div>
-        <p>Mapping Presidential Movements...</p>
-    </div>
-    
-    <div class="container">
-        <header>
-            <div class="logo">
-                <h1>Where Is Ramaphosa?</h1>
-            </div>
-            <!-- Removed subtitle -->
-            <!-- Removed nav (only contained Home) -->
-        </header>
-        
-        <main>
-            <!-- Current Location Card with Flag -->
-            <div class="location-card">
-                <div class="location-badge">CURRENT LOCATION</div>
-                <div class="location-content">
-                    <div class="location-flag" id="location-flag">🇿🇦</div>
-                    <div class="location-status" id="current-location-status">
-                        <span class="skeleton skeleton-text" style="width:60%"></span>
-                    </div>
-                    <div class="location-icon">
-                        <span id="location-icon-symbol">📍</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tracker-card">
-                <div class="status-badge">LAST FLIGHT</div>
-                <div class="journey-details">
-                    <div class="location-item from">
-                        <h3>Departing From</h3>
-                        <p id="departing-location"><span class="skeleton skeleton-text" style="width:70%"></span></p>
-                    </div>
-                    <div class="journey-arrow">→</div>
-                    <div class="location-item to">
-                        <h3>Arriving At</h3>
-                        <p id="destination-location"><span class="skeleton skeleton-text" style="width:70%"></span></p>
-                    </div>
-                </div>
-                <div class="time-details">
-                    <div class="time-item">
-                        <h3>Arrival Date</h3>
-                        <p id="destination-date"><span class="skeleton skeleton-text" style="width:50%"></span></p>
-                    </div>
-                    <div class="time-item">
-                        <h3>Arrival Time</h3>
-                        <p id="destination-time"><span class="skeleton skeleton-text" style="width:40%"></span></p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="map-container">
-                <div id="map"></div>
-                <button
-                    id="recenter-map"
-                    class="map-control-button"
-                    title="Recenter Map"
-                    aria-label="Recenter map to current flight"
-                >
-                    <span class="recenter-icon">⌖</span>
-                </button>
-                <div id="map-loading-overlay" class="map-loading-overlay">
-                    <div class="loading-spinner"></div>
-                    <p>Loading Map Data...</p>
-                </div>
-                <!-- Geo progress indicator (top-right) -->
-                <div id="geo-progress" class="geo-progress" hidden aria-live="polite" aria-label="Geocoding progress">
-                    <div class="geo-spinner" aria-hidden="true"></div>
-                    <div class="geo-count"><span id="geo-done">0</span>/<span id="geo-total">0</span></div>
-                    <div class="geo-eta" id="geo-eta">ETA —</div>
-                </div>
-            </div>
-            
-            <!-- Historical Flights Section -->
-            <div class="history-section">
-                <h2>Historical Flights</h2>
-                <p class="subtitle">Track the President's previous movements</p>
-
-                <!-- Enhanced Customization Controls -->
-                <div class="flight-controls">
-                    <div class="control-header"><strong>Showing:</strong> All flights</div>
-
-                    <div class="control-group">
-                        <label>Display options:</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="show-markers" checked>
-                                Show markers
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="show-routes" checked>
-                                Show flight paths
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="show-labels" checked>
-                                Show labels
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="show-current-departure" checked>
-                                Show current departure
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="control-actions">
-                        <button id="apply-settings" class="primary-button">Show Historical Flights</button>
-                    </div>
-                </div>
-                
-                <div class="flight-selector-container">
-                    <details>
-                        <summary>Select specific flights</summary>
-                        <div class="flight-selector" id="flight-selector">
-                            <p class="loading-message">Loading flights...</p>
-                            <!-- Checkboxes will be generated here -->
-                        </div>
-                    </details>
-                </div>
-                
-                <!-- Collapsed by default: history controls + table -->
-                <details class="history-collapsible">
-                    <summary>Show flight history</summary>
-                    <div class="history-controls">
-                        <button id="sort-by-date" class="history-button">Sort by Date</button>
-                        <button id="sort-by-destination" class="history-button">Sort by Destination</button>
-                        <span class="history-count">Loading flights...</span>
-                    </div>
-                    <div class="history-container">
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>Departure</th>
-                                    <th>Destination</th>
-                                    <th>Date</th>
-                                    <th>Time</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-data">
-                                <tr>
-                                    <td colspan="4" class="loading-message">Loading flight history...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </details>
-            </div>
-        </main>
-        
-        <footer>
-            <p>Data updated automatically. This is not an official government website.</p>
-            <p class="small">© <span id="current-year"></span> Where Is Ramaphosa | <a href="about.html">About</a> | <a href="sitemap.xml">Sitemap</a></p>
-            <div class="social-links">
-                <a href="https://veergosai.com" target="_blank" rel="noopener noreferrer" aria-label="Website: veergosai.com">
-                    <i class="fa-solid fa-globe icon" aria-hidden="true"></i>
-                    <span>veergosai.com</span>
-                </a>
-                <a href="https://github.com/VeerGosai" target="_blank" rel="noopener noreferrer" aria-label="GitHub: VeerGosai">
-                    <i class="fa-brands fa-github icon" aria-hidden="true"></i>
-                    <span>@VeerGosai</span>
-                </a>
-            </div>
-
-            <!-- Web scraper status box -->
-            <div class="scraper-status" role="status" aria-live="polite" aria-label="Web scraper status">
-                <div class="scraper-status-header">Web scraper status</div>
-                <ul class="scraper-status-list">
-                    <li class="status-item online">
-                        <span class="status-dot online" aria-hidden="true"></span>
-                        <button type="button" class="status-host status-toggle" aria-expanded="false">
-                            gh01.runner.github.com
-                        </button>
-                        <span class="status-text online">Online</span>
-                        <div class="status-info" hidden>
-                            <p>This project runs in a GitHub Action on:</p>
-                            <ul>
-                                <li>Ubuntu 24.04.2 LTS</li>
-                                <li>Schedule: every 30 minutes</li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="status-item offline">
-                        <span class="status-dot offline" aria-hidden="true"></span>
-                        <button type="button" class="status-host status-toggle" aria-expanded="false">
-                            prod1-ec2.aws.taptic.org
-                        </button>
-                        <span class="status-text offline">Offline</span>
-                        <div class="status-info" hidden>
-                            <p>The scraper has not been deployed on any Taptic infrastructure as of yet.</p>
-                        </div>
-                    </li>
-                    <!-- New: CartoCDN tiles (frontend) -->
-                    <li id="status-carto-tiles" class="status-item offline">
-                        <span class="status-dot offline" aria-hidden="true"></span>
-                        <span class="status-host">basemaps.cartocdn.com</span>
-                        <span class="status-text offline">Offline</span>
-                    </li>
-                    <!-- New: OpenStreetMap API (Nominatim) -->
-                    <li id="status-osm-api" class="status-item offline">
-                        <span class="status-dot offline" aria-hidden="true"></span>
-                        <span class="status-host">nominatim.openstreetmap.org</span>
-                        <span class="status-text offline">Offline</span>
-                    </li>
-                </ul>
-            </div>
-            <div class="version-info">Version 3.0</div>
-        </footer>
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
-    <!-- Removed reference to script.js -->
-    <script src="utils.js"></script>
-    <script src="map.js"></script>
-    <script src="flights.js"></script>
-    <script src="ui.js"></script>
-    <script src="main.js"></script>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="brand">
+    <a class="brand__mark" href="index.html" aria-label="Where Is Ramaphosa home"><span class="brand__symbol" aria-hidden="true">↗</span><span class="brand__name">WHERE IS<br><span>RAMAPHOSA?</span></span></a>
+    <nav class="brand__nav" aria-label="Main navigation"><a class="active" href="index.html" aria-current="page">Observatory</a><a href="about.html">About</a></nav>
+    <div class="theme-control"><select id="theme-select" aria-label="Colour theme"><option value="auto">◐ System</option><option value="light">☀ Light</option><option value="dark">☾ Dark</option></select></div>
+  </header>
+  <div id="top-progress" class="top-progress" aria-hidden="true"><div class="bar"></div></div>
+  <main id="main" class="page-shell">
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title">Flight tracker<span class="accent">.</span></h1><a class="text-link" href="#history">Flight history ↘</a>
+    </section>
+    <section class="overview" aria-label="Latest flight overview">
+      <div class="location-card">
+        <div class="card-label"><span class="eyebrow">Last reported location</span><span id="location-flag" aria-hidden="true">↗</span></div>
+        <h2 id="current-location-status" aria-live="polite">Loading location…</h2>
+        <p id="location-note">Loading record…</p>
+        <div class="location-bottom"><span class="record-badge" id="record-status">Loading record</span><span class="mono">LMG1 ↗</span></div>
+      </div>
+      <div class="tracker-card">
+        <div class="card-label"><span class="eyebrow">Latest flight</span><span class="mono" id="flight-record-date">—</span></div>
+        <div class="journey-details"><div class="location-item"><h3>Departure</h3><p id="departing-location">—</p></div><span class="journey-arrow" aria-hidden="true">⟶</span><div class="location-item"><h3>Arrival</h3><p id="destination-location">—</p></div></div>
+        <div class="time-details"><div><h3>Arrival date</h3><p id="destination-date">—</p></div><div><h3>Arrival time</h3><p id="destination-time">—</p></div><a href="#map-section" class="text-link">View route ↗</a></div>
+      </div>
+    </section>
+    <section class="map-section" id="map-section" aria-labelledby="map-heading">
+      <div class="section-toolbar"><h2 id="map-heading">Flight map</h2><div class="map-key"><span><i class="key-departure"></i> Departure</span><span><i class="key-arrival"></i> Arrival</span><span class="map-provider">OpenStreetMap</span></div></div>
+      <div class="map-container">
+        <div id="map" role="region" aria-label="Interactive map of reported aircraft routes"></div>
+        <div class="map-actions"><button id="recenter-map" class="map-control-button" title="Fit latest route" aria-label="Fit latest flight on map">⌖</button><button id="reset-map" class="map-control-button" title="Show South Africa" aria-label="Show South Africa">ZA</button></div>
+        <div id="map-loading-overlay" class="map-loading-overlay" hidden><span class="loading-spinner"></span><span>Locating route…</span></div>
+        <div id="map-message" class="map-message" role="status" hidden></div>
+      </div>
+      <div class="map-caption"><p id="map-summary" aria-live="polite">Loading the latest route…</p><span>Approximate routes · Not live</span></div>
+    </section>
+    <section id="history" class="history-section" aria-labelledby="history-heading">
+      <div class="section-heading"><h2 id="history-heading">Flight history</h2><p><strong id="history-total">—</strong> records</p></div>
+      <div class="history-layout">
+        <aside class="flight-controls" aria-label="Map display controls"><div class="control-heading"><h3>Map display</h3></div>
+          <label class="field-label" for="flight-count">Flights</label><select id="flight-count"><option value="10">Latest 10</option><option value="25">Latest 25</option><option value="50">Latest 50</option><option value="all">All flights</option><option value="selected">Selected flights</option></select>
+          <fieldset><legend>Map layers</legend><label class="checkbox-label"><input type="checkbox" id="show-routes" checked> Routes</label><label class="checkbox-label"><input type="checkbox" id="show-markers" checked> Markers</label><label class="checkbox-label"><input type="checkbox" id="show-labels"> Labels</label><label class="checkbox-label"><input type="checkbox" id="show-current-departure" checked> Latest departure</label></fieldset>
+          <button id="apply-settings" class="primary-button" disabled>Apply to map ↗</button><button id="clear-history" class="secondary-button">Reset map</button><p id="plot-status" class="control-note" role="status"></p>
+          <details class="flight-selector-container"><summary>Choose flights</summary><div class="selection-actions"><button id="select-all" type="button">Select all</button><button id="select-none" type="button">Clear</button></div><div id="flight-selector" class="flight-selector"><p class="loading-message">Loading journeys…</p></div></details>
+        </aside>
+        <div class="history-panel"><div class="history-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input id="history-search" type="search" placeholder="Search flights" aria-label="Search flight history"></label><div class="sort-field"><select id="history-sort" aria-label="Sort flight history"><option value="date">Newest first</option><option value="destination">Destination A–Z</option></select></div></div>
+          <div class="history-container" tabindex="0" role="region" aria-label="Flight history table"><table class="history-table"><thead><tr><th scope="col">Departure</th><th scope="col">Destination</th><th scope="col">Arrival date</th><th scope="col">Local time</th></tr></thead><tbody id="history-data"><tr><td colspan="4" class="loading-message">Loading flight history…</td></tr></tbody></table></div>
+          <div class="table-footer"><span id="history-count" role="status">Loading records…</span><div><button id="previous-page" class="page-button" aria-label="Previous page" disabled>←</button><span id="page-number">01</span><button id="next-page" class="page-button" aria-label="Next page" disabled>→</button></div></div>
+        </div>
+      </div>
+    </section>
+    <p class="data-note">Aircraft records may be delayed and do not confirm passengers. <a href="about.html">About the data ↗</a></p>
+  </main>
+  <footer><div class="footer-top"><a class="footer-wordmark" href="index.html">WHERE IS <span>RAMAPHOSA?</span></a><div class="footer-links"><a href="about.html">About ↗</a><a href="https://github.com/VeerGosai/Where-Is-Ramaphosa" target="_blank" rel="noopener noreferrer">Source code ↗</a><a href="https://veergosai.com" target="_blank" rel="noopener noreferrer">veergosai.com ↗</a></div></div><div class="footer-bottom"><p>© <span id="current-year"></span> Where Is Ramaphosa · Unofficial</p><p>Location data: <a href="https://ourairports.com/data/">OurAirports</a> / <a href="https://www.geonames.org/">GeoNames</a></p></div></footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="utils.js"></script><script src="locations.js"></script><script src="map.js"></script><script src="flights.js"></script><script src="ui.js"></script><script src="main.js"></script>
 </body>
 </html>
