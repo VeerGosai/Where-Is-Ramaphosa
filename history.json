@@ -2375,5 +2375,12 @@
     "destination_time": "04:07PM SAST",
     "destination_date": "Sun 01-Nov-2026",
     "timestamp": "2026-11-01T16:07:41.260Z"
+  },
+  {
+    "departing": "Pilanesberg, South Africa",
+    "destination": "Pretoria, South Africa",
+    "destination_time": "11:56AM SAST",
+    "destination_date": "Thu 12-Nov-2026",
+    "timestamp": "2026-11-12T10:08:12.663Z"
   }
 ]
