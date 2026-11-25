@@ -2410,5 +2410,12 @@
     "destination_time": "06:15PM SAST",
     "destination_date": "Wed 25-Nov-2026",
     "timestamp": "2026-11-25T18:09:22.766Z"
+  },
+  {
+    "departing": "Johannesburg, South Africa",
+    "destination": "Pretoria, South Africa",
+    "destination_time": "08:44PM SAST",
+    "destination_date": "Wed 25-Nov-2026",
+    "timestamp": "2026-11-25T20:07:37.119Z"
   }
 ]
