@@ -2452,5 +2452,12 @@
     "destination_time": "",
     "destination_date": "",
     "timestamp": "2026-11-26T18:09:46.427Z"
+  },
+  {
+    "departing": "Ysterplaat, South Africa",
+    "destination": "Pretoria, South Africa",
+    "destination_time": "08:20PM SAST",
+    "destination_date": "Thu 26-Nov-2026",
+    "timestamp": "2026-11-26T20:08:10.898Z"
   }
 ]
