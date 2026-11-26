@@ -2438,5 +2438,12 @@
     "destination_time": "09:03AM SAST",
     "destination_date": "Thu 26-Nov-2026",
     "timestamp": "2026-11-26T08:11:26.471Z"
+  },
+  {
+    "departing": "Kimberley, South Africa",
+    "destination": "Ysterplaat, South Africa",
+    "destination_time": "05:30PM SAST",
+    "destination_date": "Thu 26-Nov-2026",
+    "timestamp": "2026-11-26T16:09:17.895Z"
   }
 ]
